@@ -19,6 +19,29 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+    files: ["**/*.ts", "**/*.tsx"],
+    languageOptions: {
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: "module",
+      },
+    },
+    rules: {
+      // Отключаем стандартное правило
+      "no-unused-vars": "off",
+
+      // Включаем правило от TypeScript, но как warning, не ошибку
+      "@typescript-eslint/no-unused-vars": [
+        "off",
+        {
+          vars: "all",
+          args: "after-used",
+          ignoreRestSiblings: true,
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+    },
   },
 ];
 
