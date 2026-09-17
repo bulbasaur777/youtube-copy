@@ -199,7 +199,7 @@ export default async function Main() {
     <div className="absolute w-full flex top-[56px] right-0">
       <Spacer />
       <main className="relative w-full flex-1 px-1 pb-1 bg-bg text-text rounded-tl-xl">
-        <Tags />
+        <Tags tags={tags} />
         <Streams regularStreams={regularStreams} />
       </main>
     </div>

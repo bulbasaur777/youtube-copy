@@ -1,21 +1,24 @@
 "use client";
 
 import { SliderBar } from "./Slidebar/Slidebar";
-
 import Tag from "./Tag/Tag";
 
-export default function TagLine() {
+type Props = {
+  tags: { name: string }[];
+};
+
+export default function Tags({ tags }: Props) {
   return (
     <div className="sticky w-full top-[56px] z-2 px-6 py-1 pb-1 bg-bg/99 backdrop-blur-xl">
       <div className="relative w-full flex border-slate-300 border-solid h-[40px] my-1 select-none">
         <div className="relative flex w-full h-[40px] pb-0 overflow-x-hidden">
           <SliderBar controls={true}>
-            {tagNames.map((tagName) => {
+            {tags.map(({ name }) => {
               return (
                 <Tag
-                  key={tagName}
-                  name={tagName}
-                  isActive={tagName === "Все" ? true : false}
+                  key={name}
+                  name={name}
+                  isActive={name === "Lineage 2" ? true : false}
                 />
               );
             })}
