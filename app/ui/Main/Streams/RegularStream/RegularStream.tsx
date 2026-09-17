@@ -11,18 +11,16 @@ import VideoContexMenu from "./VideoContextMenu/VideoContextMenu";
 
 type Props = ComponentPropsWithoutRef<"div"> & {
   title: string;
-  streamer: string;
-  time: number;
-  game: string;
+  author: string;
+  duration: number;
   lang: string;
   color: string;
 };
 
 export default function RegularStream({
   title,
-  streamer,
-  time,
-  game,
+  author,
+  duration,
   lang,
   color,
   ...props
@@ -66,7 +64,7 @@ export default function RegularStream({
         {/* Time */}
         <div className="absolute z-1 bottom-2 right-2">
           <div className="flex gap-1.5 justify-center items-center px-1.5 py-2.5 h-[16px] text-xs bg-black/60 rounded">
-            <div className="text-text-2">{formatTime(time)}</div>
+            <div className="text-text-2">{formatTime(duration)}</div>
           </div>
         </div>
 

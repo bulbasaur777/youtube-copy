@@ -1,8 +1,13 @@
+import { getAllTags } from "@/libs/data/tags";
 import Spacer from "./Spacer/Spacer";
 import Streams from "./Streams/Streams";
 import Tags from "./Tags/Tags";
 
-export default function Main() {
+export default async function Main() {
+  const tags = await getAllTags();
+
+  console.log(tags);
+
   const regularStreams = [
     {
       title: "Another STREAM!",
