@@ -6,8 +6,6 @@ import Tags from "./Tags/Tags";
 export default async function Main() {
   const tags = await getAllTags();
 
-  console.log(tags);
-
   const regularStreams = [
     {
       title: "Another STREAM!",
