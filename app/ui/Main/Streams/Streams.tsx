@@ -67,9 +67,8 @@ export default function Streams({ regularStreams }: Props) {
             <RegularStream
               key={game + streamer + i}
               title={title}
-              streamer={streamer}
-              time={time}
-              game={game}
+              author={streamer}
+              duration={time}
               lang={lang}
               color={color}
             />
