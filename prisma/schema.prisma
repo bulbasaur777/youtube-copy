@@ -18,34 +18,129 @@ model User {
   email     String   @unique
   createdAt DateTime @default(now())
 
-  videos    Video[]
+  videos         Video[]
+  comments       Comment[]
+  videoReactions VideoReaction[]
+  playlists      Playlist[]
+
+  following Subscription[] @relation("UserFollowing")
+  followers Subscription[] @relation("UserFollowers")
 }
 
 model Video {
-  id          String   @id @default(uuid())
-  title       String
-  description String   @db.Text
-  videoUrl    String
+  id           String  @id @default(uuid())
+  title        String
+  description  String  @db.Text
+  videoUrl     String
   thumbnailUrl String?
-  
-  duration    Int      // Продолжительность в секундах
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  viewsCount   Int      @default(0)
-  likesCount   Int      @default(0)
-  dislikesCount Int     @default(0)
+  color        String?
 
+  duration      Int // Продолжительность в секундах
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  viewsCount    Int      @default(0)
+  likesCount    Int      @default(0)
+  dislikesCount Int      @default(0)
 
-  authorId     String
-  author       User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  videoReactions VideoReaction[]
+  comments       Comment[]
+  playlistItems  PlaylistItem[]
 
-  tags         Tag[]
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  tags Tag[]
 }
 
 model Tag {
-  id     String  @id @default(uuid())
-  name   String  @unique
-  slug   String  @unique
+  id   String @id @default(uuid())
+  name String @unique
+  slug String @unique
 
   videos Video[]
+}
+
+model Subscription {
+  id           String @id @default(uuid())
+  subscriberId String
+  channelId    String
+
+  createdAt DateTime @default(now())
+
+  notificationsEnabled Boolean @default(true)
+
+  subscriber User @relation("UserFollowing", fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  channel User @relation("UserFollowers", fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriberId, channelId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  text      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  authorId String
+  videoId  String
+
+  author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  video  Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+}
+
+model Playlist {
+  id           String  @id @default(uuid())
+  title        String
+  description  String? @db.Text
+  thumbnailUrl String?
+
+  isPublic Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  items PlaylistItem[]
+}
+
+model PlaylistItem {
+  id String @id @default(uuid())
+
+  playlistId String
+  videoId    String
+
+  position  Int
+  createdAt DateTime @default(now())
+
+  playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  video    Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([playlistId, videoId])
+}
+
+enum VideoReactionType {
+  LIKE
+  DISLIKE
+}
+
+model VideoReaction {
+  id   String            @id @default(uuid())
+  type VideoReactionType
+
+  userId  String
+  videoId String
+
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
 }

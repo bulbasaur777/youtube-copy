@@ -2,52 +2,45 @@
 
 import { useState } from "react";
 import { useAutoHideScrollbar } from "./hooks/useAutoHideScrollbar";
-import RegularStream from "./RegularStream/RegularStream";
+import Video from "./Video/Video";
 import { useInfiniteScroll } from "./hooks/useInfiniteScrolls";
-import { getStreams } from "./actions/getStreams";
-import RegularStreamSkeleton from "./RegularStream/RegularStreamSkeleton/RegularStreamSkeleton";
+import { getVideos } from "./actions/getVideos";
+import VideoSkeleton from "./Video/VideoSkeleton/VideoSkeleton";
 
-type Stream = {
-  title: string;
-  streamer: string;
-  time: number;
-  game: string;
-  lang: string;
-  color: string;
-};
+import { getAllVideos } from "@/lib/data/videos";
 
 type Props = {
-  regularStreams: Stream[];
+  videosList: Awaited<ReturnType<typeof getAllVideos>>;
 };
 
-export default function Streams({ regularStreams }: Props) {
+export default function Videos({ videosList }: Props) {
   const { scrollRef, showScrollbar } = useAutoHideScrollbar(1000);
-  const [streams, setStreams] = useState(regularStreams);
+  const [videos, setVideos] = useState(videosList);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isLastPage, setIsLastPage] = useState(false);
 
-  const fetchStreams = async () => {
-    const streams = await getStreams(page + 1);
-    if (streams.length > 0) {
-      setPage((page) => page + 1);
-      setStreams((prev) => [...prev, ...streams]);
-    } else {
-      setIsLastPage(true);
-    }
+  // const fetchStreams = async () => {
+  //   const streams = await getStreams(page + 1);
+  //   if (streams.length > 0) {
+  //     setPage((page) => page + 1);
+  //     setStreams((prev) => [...prev, ...streams]);
+  //   } else {
+  //     setIsLastPage(true);
+  //   }
 
-    setLoading(false);
-  };
+  //   setLoading(false);
+  // };
 
-  useInfiniteScroll({
-    callback: () => {
-      if (!loading && !isLastPage) {
-        setLoading(true);
-        fetchStreams();
-      }
-    },
-    buffer: 500,
-  });
+  // useInfiniteScroll({
+  //   callback: () => {
+  //     if (!loading && !isLastPage) {
+  //       setLoading(true);
+  //       fetchStreams();
+  //     }
+  //   },
+  //   buffer: 500,
+  // });
 
   return (
     <div
@@ -62,15 +55,14 @@ export default function Streams({ regularStreams }: Props) {
                   ${isLastPage && "mb-5"}
         `}
       >
-        {streams.map(({ title, streamer, time, game, lang, color }, i) => {
+        {videos.map((video, i) => {
           return (
-            <RegularStream
-              key={game + streamer + i}
-              title={title}
-              author={streamer}
-              duration={time}
-              lang={lang}
-              color={color}
+            <Video
+              key={video.id}
+              title={video.title}
+              author={video.author.name}
+              duration={video.duration}
+              bgColor={video.color}
             />
           );
         })}
@@ -79,7 +71,7 @@ export default function Streams({ regularStreams }: Props) {
           <>
             {Array.from({ length: 16 }).map((_i, index) => {
               return (
-                <RegularStreamSkeleton
+                <VideoSkeleton
                   key={index}
                   opacity={3}
                   timer={50 + index * 50}

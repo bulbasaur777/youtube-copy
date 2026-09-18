@@ -9,7 +9,7 @@ type Stream = {
   color: string;
 };
 
-export async function getStreams(page: number): Promise<Stream[]> {
+export async function getVideos(page: number): Promise<Stream[]> {
   if (page === 2) {
     return new Promise((resolve) => {
       setTimeout(() => {

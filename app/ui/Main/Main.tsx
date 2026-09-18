@@ -1,10 +1,13 @@
-import { getAllTags } from "@/libs/data/tags";
+import { getAllTags } from "@/lib/data/tags";
 import Spacer from "./Spacer/Spacer";
-import Streams from "./Streams/Streams";
+import Videos from "./Videos/Videos";
 import Tags from "./Tags/Tags";
+import { getAllVideos } from "@/lib/data/videos";
 
 export default async function Main() {
   const tags = await getAllTags();
+
+  const videosList = await getAllVideos();
 
   const regularStreams = [
     {
@@ -198,7 +201,7 @@ export default async function Main() {
       <Spacer />
       <main className="relative w-full flex-1 px-1 pb-1 bg-bg text-text rounded-tl-xl">
         <Tags tags={tags} />
-        <Streams regularStreams={regularStreams} />
+        <Videos videosList={videosList} />
       </main>
     </div>
   );

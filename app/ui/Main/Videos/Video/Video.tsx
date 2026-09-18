@@ -3,26 +3,21 @@
 import { ComponentPropsWithoutRef } from "react";
 import { motion } from "motion/react";
 import { useState } from "react";
-import StreamContextMenu from "./StreamContextMenu/StreamContextMenu";
-import TagsRow from "./TagsRow/TagsRow";
-import { formatTime } from "@/libs/services/formatTime";
-import MenuIcon from "./icons/MenuIcon";
+import { formatTime } from "@/lib/services/formatTime";
 import VideoContexMenu from "./VideoContextMenu/VideoContextMenu";
 
 type Props = ComponentPropsWithoutRef<"div"> & {
   title: string;
   author: string;
   duration: number;
-  lang: string;
-  color: string;
+  bgColor: string | null;
 };
 
-export default function RegularStream({
+export default function Video({
   title,
   author,
   duration,
-  lang,
-  color,
+  bgColor,
   ...props
 }: Props) {
   const [isHovered, setIsHovered] = useState(false);
@@ -39,7 +34,7 @@ export default function RegularStream({
     >
       <div
         style={{
-          backgroundColor: `color-mix(in srgb, ${color} 10%, transparent)`,
+          backgroundColor: `color-mix(in srgb, ${bgColor ?? "gray"} 10%, transparent)`,
         }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl
                    w-[95%] h-[95%] opacity-0 transition-all duration-300
@@ -76,11 +71,9 @@ export default function RegularStream({
       <div className="relative flex gap-1 items-start w-full mt-3.5 text-text z-1 select-none">
         <div className="size-9 bg-[url('/pictures/avatar.png')] mr-2 rounded-full min-w-[36px]" />
         <div className="flex flex-col">
-          <div className="text-[1rem] font-medium pr-6">
-            Новости дня | 16 июля 2026 г. — вечерний выпуск
-          </div>
+          <div className="text-[1rem] font-medium pr-6">{title}</div>
           <div className="text-text/80 text-[0.9rem] hover:text-text/90 transition-all duration-100">
-            Euronews по-русски
+            {author}
           </div>
           <div className="text-text/80 text-[0.9rem]">
             943 просмотра <span className="font-bold">⋅</span> 54 минуты назад

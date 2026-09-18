@@ -1,4 +1,4 @@
-import { truncateText } from "@/libs/services/truncateText";
+import { truncateText } from "@/lib/services/truncateText";
 
 export default function SubscriptionItem({
   title,

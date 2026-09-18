@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function RegularStreamSkeleton({
+export default function VideoSkeleton({
   opacity = 20,
   timer,
 }: {

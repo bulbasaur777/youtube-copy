@@ -7,7 +7,7 @@ import { HoverCard } from "radix-ui";
 import { BsBadgeHd } from "react-icons/bs";
 import { GoPeople } from "react-icons/go";
 import { GiCrystalBall } from "react-icons/gi";
-import { truncateText } from "@/libs/services/truncateText";
+import { truncateText } from "@/lib/services/truncateText";
 
 type Props = {
   children: React.ReactNode;
