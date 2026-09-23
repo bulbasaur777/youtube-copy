@@ -51,7 +51,7 @@ export default function Notifications() {
               sideOffset={6}
               align="end"
               asChild
-              className="flex flex-col z-4 w-[85vw] md:w-[480px] h-[400px] md:h-[575px]"
+              className="flex flex-col z-10 w-[85vw] md:w-[480px] h-[400px] md:h-[575px]"
             >
               <motion.div
                 initial={{ opacity: 0, y: -10 }}

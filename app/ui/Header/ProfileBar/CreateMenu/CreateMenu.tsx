@@ -30,8 +30,8 @@ export default function CreateMenu() {
               side="bottom"
               align="start"
               collisionPadding={5}
-              sideOffset={2}
-              className="z-4"
+              sideOffset={5}
+              className="z-10"
             >
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
