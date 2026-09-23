@@ -8,12 +8,14 @@ import { getVideos } from "./actions/getVideos";
 import VideoSkeleton from "./Video/VideoSkeleton/VideoSkeleton";
 
 import { getAllVideos } from "@/lib/data/videos";
+import { Lang } from "@/types/language";
 
 type Props = {
   videosList: Awaited<ReturnType<typeof getAllVideos>>;
+  lang: Lang;
 };
 
-export default function Videos({ videosList }: Props) {
+export default function Videos({ videosList, lang }: Props) {
   const { scrollRef, showScrollbar } = useAutoHideScrollbar(1000);
   const [videos, setVideos] = useState(videosList);
   const [page, setPage] = useState(1);
@@ -63,6 +65,11 @@ export default function Videos({ videosList }: Props) {
               author={video.author.name}
               duration={video.duration}
               bgColor={video.color}
+              thumbnailUrl={video.thumbnailUrl}
+              videoUrl={video.videoUrl}
+              viewsCounts={video.viewsCount}
+              createdAt={video.createdAt}
+              language={lang}
             />
           );
         })}

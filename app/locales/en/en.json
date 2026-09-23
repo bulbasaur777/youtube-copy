@@ -105,5 +105,37 @@
   "Tags": {
     "All": "All",
     "For you": "For you"
+  },
+
+  "Time and Views": {
+    "ago": "ago",
+
+    "views": {
+      "one": "view",
+      "other": "views"
+    },
+
+    "time": {
+      "minutes": {
+        "one": "minute",
+        "other": "minutes"
+      },
+      "hours": {
+        "one": "hour",
+        "other": "hours"
+      },
+      "days": {
+        "one": "day",
+        "other": "days"
+      },
+      "months": {
+        "one": "month",
+        "other": "months"
+      },
+      "years": {
+        "one": "year",
+        "other": "years"
+      }
+    }
   }
 }

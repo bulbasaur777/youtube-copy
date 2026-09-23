@@ -9,6 +9,8 @@ import { Lang } from "@/types/language";
 import CompactNavItem from "../CompactNavItem/CompactNavItem";
 import { useWindowSize } from "@/hooks/useWindowSize";
 
+const translations = { ru, ua, en } as const;
+
 type Props = {
   lang: Lang;
   isNavbarOpen: boolean;
@@ -17,8 +19,7 @@ type Props = {
 export default function HomeSection({ lang, isNavbarOpen }: Props) {
   const { windowSize } = useWindowSize();
 
-  const translations = { ru, ua, en } as const;
-  const t = translations[lang as keyof typeof translations];
+  const t = translations[lang];
 
   return isNavbarOpen && (windowSize! > 1024 || windowSize! < 640) ? (
     <div className="px-3 mt-2 border-b-1 border-gray-5 pb-3">
