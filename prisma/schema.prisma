@@ -33,6 +33,7 @@ model Video {
   description  String  @db.Text
   videoUrl     String
   thumbnailUrl String?
+  previewVideoUrl  String?
   color        String?
 
   duration      Int // Продолжительность в секундах

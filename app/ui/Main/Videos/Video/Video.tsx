@@ -20,6 +20,7 @@ type Props = ComponentPropsWithoutRef<"div"> & {
   bgColor: string | null;
   thumbnailUrl: string | null;
   videoUrl: string;
+  previewVideoUrl: string | null;
   viewsCounts: number;
   createdAt: Date;
   language: Lang;
@@ -32,6 +33,7 @@ export default function Video({
   bgColor,
   thumbnailUrl,
   videoUrl,
+  previewVideoUrl,
   viewsCounts,
   createdAt,
   language,
@@ -59,6 +61,7 @@ export default function Video({
 
       <VideoPreview
         videoUrl={videoUrl}
+        previewVideoUrl={previewVideoUrl}
         thumbnailUrl={thumbnailUrl}
         duration={duration}
         isHovered={isHovered}

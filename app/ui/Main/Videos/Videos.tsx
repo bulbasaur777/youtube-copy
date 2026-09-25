@@ -67,6 +67,7 @@ export default function Videos({ videosList, lang }: Props) {
               bgColor={video.color}
               thumbnailUrl={video.thumbnailUrl}
               videoUrl={video.videoUrl}
+              previewVideoUrl={video.previewVideoUrl}
               viewsCounts={video.viewsCount}
               createdAt={video.createdAt}
               language={lang}

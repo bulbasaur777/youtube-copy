@@ -3,6 +3,7 @@ import { useVideoPreview } from "./hooks/useVideoPreview";
 
 type Props = {
   videoUrl: string;
+  previewVideoUrl: string | null;
   thumbnailUrl: string | null;
   duration: number;
   isHovered: boolean;
@@ -10,6 +11,7 @@ type Props = {
 
 export default function VideoPreview({
   videoUrl,
+  previewVideoUrl,
   thumbnailUrl,
   duration,
   isHovered,
@@ -53,10 +55,10 @@ export default function VideoPreview({
       {/* Preview video */}
       <video
         ref={previewVideoRef}
-        src={videoUrl}
+        src={previewVideoUrl ? previewVideoUrl : videoUrl}
         muted
         playsInline
-        preload="metadata"
+        preload="auto"
         className="hidden"
       />
 
