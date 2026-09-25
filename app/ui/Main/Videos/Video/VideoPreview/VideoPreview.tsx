@@ -1,5 +1,5 @@
 import { formatTime } from "@/lib/services/formatTime";
-import { useEffect, useRef, useState } from "react";
+import { useVideoPreview } from "./hooks/useVideoPreview";
 
 type Props = {
   videoUrl: string;
@@ -14,69 +14,31 @@ export default function VideoPreview({
   duration,
   isHovered,
 }: Props) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const playTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [isBarHovered, setIsBarHovered] = useState(false);
-
-  useEffect(() => {
-    const video = videoRef.current;
-
-    if (!video) return;
-
-    // Очищаем предыдущий timeout.
-    if (playTimeoutRef.current) {
-      clearTimeout(playTimeoutRef.current);
-      playTimeoutRef.current = null;
-    }
-
-    if (!isHovered) {
-      video.pause();
-      setIsPlaying(false);
-
-      return;
-    }
-
-    // Запускаем видео только после задержки.
-    playTimeoutRef.current = setTimeout(async () => {
-      try {
-        await video.play();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error("Video preview could not be played:", error);
-      }
-    }, 600);
-
-    return () => {
-      if (playTimeoutRef.current) {
-        clearTimeout(playTimeoutRef.current);
-        playTimeoutRef.current = null;
-      }
-    };
-  }, [isHovered]);
-
-  const handleTimeUpdate = () => {
-    const video = videoRef.current;
-
-    if (!video || !video.duration) return;
-
-    setProgress((video.currentTime / video.duration) * 100);
-  };
-
-  const handleEnded = () => {
-    setIsPlaying(false);
-    setProgress(100);
-  };
-
-  const remainingTime = Math.max(
-    0,
-    Math.round(duration - (videoRef.current?.currentTime ?? 0)),
-  );
+  const {
+    videoRef,
+    previewVideoRef,
+    canvasRef,
+    progressBarRef,
+    previewFrameRequestRef,
+    isPlaying,
+    isBarHovered,
+    setIsBarHovered,
+    handleTimeUpdate,
+    handleEnded,
+    handleProgressMouseMove,
+    handleProgressMouseDown,
+    handleProgressMouseEnter,
+    handleProgressMouseLeave,
+    progress,
+    remainingTime,
+    previewTime,
+    previewProgress,
+    isScrubbing,
+  } = useVideoPreview({ isHovered, duration });
 
   return (
     <div className="relative aspect-video overflow-hidden rounded-xl">
+      {/* Main video */}
       <video
         ref={videoRef}
         src={videoUrl}
@@ -88,6 +50,17 @@ export default function VideoPreview({
         className="absolute inset-0 w-full h-full object-cover"
       />
 
+      {/* Preview video */}
+      <video
+        ref={previewVideoRef}
+        src={videoUrl}
+        muted
+        playsInline
+        preload="metadata"
+        className="hidden"
+      />
+
+      {/* Thumbnail */}
       <div
         className={`absolute inset-0 bg-cover bg-center transition-opacity duration-200 ${
           isPlaying ? "opacity-0" : "opacity-100"
@@ -97,32 +70,68 @@ export default function VideoPreview({
         }}
       />
 
-      {!isBarHovered ? (
-        <div className="absolute z-1 bottom-2 right-2">
+      {/* Preview Frame */}
+      {isBarHovered && !isScrubbing && previewProgress !== null && (
+        <div
+          className="absolute bottom-8 z-20 pointer-events-none"
+          style={{ left: `${previewProgress}%`, transform: "translateX(-50%)" }}
+        >
+          <div className="relative">
+            <canvas
+              ref={canvasRef}
+              className="w-40 aspect-video object-cover rounded-md shadow-lg border border-white/20"
+            />
+            <div className="absolute bottom-1 left-1 px-1.5 py-0.5 text-xs bg-black/70 text-white rounded">
+              {formatTime(Math.round(previewTime))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Remaining Time */}
+      {!isBarHovered && !isScrubbing && (
+        <div className="absolute z-10 bottom-2 right-2">
           <div className="flex gap-1.5 justify-center items-center px-1.5 py-2.5 h-[16px] text-xs bg-black/60 rounded">
             <div className="text-text-2">
               {!isPlaying ? formatTime(duration) : formatTime(remainingTime)}
             </div>
           </div>
         </div>
-      ) : null}
+      )}
 
+      {/* Progress Bar */}
+      {}
       <div
+        ref={progressBarRef}
         className="group/bar absolute bottom-0 left-0 right-0 pt-2 hover:pb-2 hover:px-3 transition-all duration-200"
-        onMouseEnter={() => setIsBarHovered(true)}
-        onMouseLeave={() => setIsBarHovered(false)}
+        onMouseEnter={handleProgressMouseEnter}
+        onMouseLeave={handleProgressMouseLeave}
+        onMouseMove={handleProgressMouseMove}
+        onMouseDown={handleProgressMouseDown}
       >
         <div
-          className={`bg-white/30 z-[5] transition-opacity duration-200 ${
+          className={`relative bg-white/30 z-[5] transition-opacity duration-200 ${
             isPlaying ? "opacity-100" : "opacity-0"
           }`}
         >
+          {/* Main video progress */}
           <div
             className="h-[3px] group-hover/bar:h-[5px] bg-red-500"
             style={{
               width: `${progress}%`,
             }}
           />
+
+          {/* Preview video progress */}
+          {isBarHovered && (
+            <div
+              className="absolute top-1/2 w-3 h-3 rounded-full bg-white shadow-md"
+              style={{
+                left: `${progress}%`,
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
