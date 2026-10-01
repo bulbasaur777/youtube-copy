@@ -4,10 +4,8 @@ import { useState } from "react";
 import { useAutoHideScrollbar } from "./hooks/useAutoHideScrollbar";
 import Video from "./Video/Video";
 import { useInfiniteScroll } from "./hooks/useInfiniteScrolls";
-import { getVideos } from "./actions/getVideos";
 import VideoSkeleton from "./Video/VideoSkeleton/VideoSkeleton";
-
-import { getAllVideos } from "@/lib/data/videos";
+import { getAllVideos, getVideos } from "@/lib/data/videos";
 import { Lang } from "@/types/language";
 
 type Props = {
@@ -22,27 +20,29 @@ export default function Videos({ videosList, lang }: Props) {
   const [loading, setLoading] = useState(false);
   const [isLastPage, setIsLastPage] = useState(false);
 
-  // const fetchStreams = async () => {
-  //   const streams = await getStreams(page + 1);
-  //   if (streams.length > 0) {
-  //     setPage((page) => page + 1);
-  //     setStreams((prev) => [...prev, ...streams]);
-  //   } else {
-  //     setIsLastPage(true);
-  //   }
+  const fetchStreams = async () => {
+    const newVideos = await getVideos(page + 1);
+    console.log(newVideos);
 
-  //   setLoading(false);
-  // };
+    if (newVideos.length > 0) {
+      setPage((page) => page + 1);
+      setVideos((prev) => [...prev, ...newVideos]);
+    } else {
+      setIsLastPage(true);
+    }
 
-  // useInfiniteScroll({
-  //   callback: () => {
-  //     if (!loading && !isLastPage) {
-  //       setLoading(true);
-  //       fetchStreams();
-  //     }
-  //   },
-  //   buffer: 500,
-  // });
+    setLoading(false);
+  };
+
+  useInfiniteScroll({
+    callback: () => {
+      if (!loading && !isLastPage) {
+        setLoading(true);
+        fetchStreams();
+      }
+    },
+    buffer: 500,
+  });
 
   return (
     <div
@@ -77,7 +77,7 @@ export default function Videos({ videosList, lang }: Props) {
 
         {loading && (
           <>
-            {Array.from({ length: 16 }).map((_i, index) => {
+            {Array.from({ length: 10 }).map((_i, index) => {
               return (
                 <VideoSkeleton
                   key={index}

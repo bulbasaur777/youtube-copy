@@ -14,14 +14,20 @@ const translations = { ru, ua, en } as const;
 type Props = {
   lang: Lang;
   isNavbarOpen: boolean;
+  isModal?: boolean;
 };
 
-export default function HomeSection({ lang, isNavbarOpen }: Props) {
+export default function HomeSection({
+  lang,
+  isNavbarOpen,
+  isModal = false,
+}: Props) {
   const { windowSize } = useWindowSize();
 
   const t = translations[lang];
 
-  return isNavbarOpen && (windowSize! > 1024 || windowSize! < 640) ? (
+  return (isNavbarOpen && (windowSize! > 1024 || windowSize! < 640)) ||
+    isModal ? (
     <div className="px-3 mt-2 border-b-1 border-gray-5 pb-3">
       <NavItem
         title={t.Navigation.Home}

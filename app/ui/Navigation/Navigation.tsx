@@ -6,7 +6,7 @@ import en from "@/locales/en/en.json";
 import { Lang } from "@/types/language";
 
 import { useNavbar } from "@/contexts/NavbarContext";
-
+import { usePathname } from "next/navigation";
 import HomeSection from "./HomeSection/HomeSection";
 import SubscriptionSection from "./SubscriptionSection/SubscriptionSection";
 import YouSection from "./YouSection/YouSection";
@@ -14,12 +14,25 @@ import MoreFromYoutubeSection from "./MoreFromYoutubeSection/MoreFromYoutubeSect
 import ExploreSection from "./ExploreSection/ExploreSection";
 import ReportSection from "./ReportSection/ReportSection";
 import FooterSection from "./FooterSection/FooterSection";
-import { Portal } from "@radix-ui/react-portal";
-import YouTubeIconGroup from "../Header/YouTubeIconGroup/YouTubeIconGroup";
-import { AnimatePresence, motion } from "motion/react";
+import ModalNavigation from "./ModalNavigation/ModalNavigation";
 
-export default function Navigation({ lang }: { lang: Lang }) {
-  const { isNavbarOpen, changeNavbar } = useNavbar();
+type Props = {
+  lang: Lang;
+};
+
+export default function Navigation({ lang }: Props) {
+  const { isNavbarOpen } = useNavbar();
+
+  const pathname = usePathname();
+  const isWatchPage = pathname.startsWith("/watch");
+
+  let forceModal = false;
+
+  if (isWatchPage) {
+    forceModal = true;
+  } else {
+    forceModal = false;
+  }
 
   const translations = { ru, ua, en } as const;
   const t = translations[lang as keyof typeof translations];
@@ -27,7 +40,7 @@ export default function Navigation({ lang }: { lang: Lang }) {
   return (
     <>
       <nav
-        className={`fixed top-[56px] w-[72px] hidden sm:block ${isNavbarOpen ? "lg:w-[240px]" : "lg:w-[72px]"} max-h-[calc(100vh-60px)] overflow-y-auto bg-bg text-text py-1 z-20 scrollbar-nav-custom overscroll-contain`}
+        className={`fixed top-[56px] ${forceModal ? "hidden" : "w-[72px] hidden sm:block"} ${isNavbarOpen ? "lg:w-[240px]" : "lg:w-[72px]"} max-h-[calc(100vh-60px)] overflow-y-auto bg-bg text-text py-1 z-20 scrollbar-nav-custom overscroll-contain`}
       >
         <HomeSection lang={lang} isNavbarOpen={isNavbarOpen} />
 
@@ -48,7 +61,9 @@ export default function Navigation({ lang }: { lang: Lang }) {
         <FooterSection lang={lang} isNavbarOpen={isNavbarOpen} />
       </nav>
 
-      <Portal>
+      <ModalNavigation lang={lang} forceModal={forceModal} />
+
+      {/* <Portal>
         <AnimatePresence>
           {isNavbarOpen && (
             <>
@@ -57,15 +72,16 @@ export default function Navigation({ lang }: { lang: Lang }) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
-                className="absolute top-0 left-0 w-full h-full sm:hidden bg-black/30 z-10"
+                className={`absolute top-0 left-0 w-full h-full ${forceModal ? "" : "sm:hidden"} bg-black/30 z-10`}
                 onClick={changeNavbar}
               />
+
               <motion.nav
                 initial={{ opacity: 1, x: -200 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 1, x: -200 }}
                 transition={{ duration: 0.15 }}
-                className={`fixed top-0 left-0 block z-10 sm:hidden w-[240px] max-h-[100vh] overflow-y-auto overflow-x-hidden bg-bg text-text py-1 scrollbar-nav-custom overscroll-contain`}
+                className={`fixed top-0 left-0 block z-10 ${forceModal ? "" : "sm:hidden"} w-[240px] max-h-[100vh] overflow-y-auto overflow-x-hidden bg-bg text-text py-1 scrollbar-nav-custom overscroll-contain`}
               >
                 <YouTubeIconGroup isNavigation />
                 <HomeSection lang={lang} isNavbarOpen={true} />
@@ -89,7 +105,7 @@ export default function Navigation({ lang }: { lang: Lang }) {
             </>
           )}
         </AnimatePresence>
-      </Portal>
+      </Portal> */}
     </>
   );
 }

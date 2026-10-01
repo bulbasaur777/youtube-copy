@@ -37,6 +37,7 @@ export function useVideoPreview({ isHovered, duration }: Props) {
     }
 
     if (!isHovered) {
+      if (!isPlaying) return;
       video.pause();
       setIsPlaying(false);
 
@@ -58,6 +59,7 @@ export function useVideoPreview({ isHovered, duration }: Props) {
         playTimeoutRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHovered]);
 
   const handleTimeUpdate = () => {
@@ -93,6 +95,14 @@ export function useVideoPreview({ isHovered, duration }: Props) {
       selectedTimeRef.current = nextTime;
     });
   };
+
+  useEffect(() => {
+    if (!isPlaying || !isBarHovered || previewProgress === null) {
+      return;
+    }
+    seekPreviewVideo(previewProgress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying]);
 
   const handleProgressMouseMove = (event: ReactMouseEvent<HTMLDivElement>) => {
     const nextProgress = getProgressFromClientX(event.clientX);
@@ -142,6 +152,7 @@ export function useVideoPreview({ isHovered, duration }: Props) {
 
       selectedTimeRef.current = nextTime;
     };
+
     const handleWindowMouseUp = () => {
       const selectedTime = selectedTimeRef.current;
 
@@ -224,6 +235,12 @@ export function useVideoPreview({ isHovered, duration }: Props) {
     };
   }, []);
 
+  const handleSwitchSound = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+  };
+
   const remainingTime = Math.max(
     0,
     Math.round(duration - (videoRef.current?.currentTime ?? 0)),
@@ -240,7 +257,6 @@ export function useVideoPreview({ isHovered, duration }: Props) {
     previewVideoRef,
     canvasRef,
     progressBarRef,
-    previewFrameRequestRef,
     isPlaying,
     isBarHovered,
     setIsBarHovered,
@@ -250,6 +266,7 @@ export function useVideoPreview({ isHovered, duration }: Props) {
     handleProgressMouseDown,
     handleProgressMouseEnter,
     handleProgressMouseLeave,
+    handleSwitchSound,
     progress,
     remainingTime,
     previewTime,

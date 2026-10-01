@@ -9,10 +9,16 @@ import UploadIcon from "./icons/UploadIcon";
 import GoLiveIcon from "./icons/GoLiveIcon";
 import CreatePostIcon from "./icons/CreatePostIcon";
 import { FiPlus } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { createVideo } from "@/actions/video/createVideo";
 
 export default function CreateMenu() {
   const [open, setOpen] = useState(false);
   const { t } = useLang();
+
+  const handleUploadClick = async () => {
+    await createVideo();
+  };
 
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen} modal={false}>
@@ -42,7 +48,10 @@ export default function CreateMenu() {
               >
                 <div>
                   <ul className="py-2 text-[14px] text-text">
-                    <li className="flex items-center gap-2 py-2 px-4 hover:bg-gray-3 cursor-pointer">
+                    <li
+                      className="flex items-center gap-2 py-2 px-4 hover:bg-gray-3 cursor-pointer"
+                      onClick={handleUploadClick}
+                    >
                       <UploadIcon className="size-6" />{" "}
                       {t.Header["Upload Video"]}
                     </li>

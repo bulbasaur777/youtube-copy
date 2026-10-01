@@ -7,15 +7,21 @@ import { useWindowSize } from "@/hooks/useWindowSize";
 type Props = {
   lang: Lang;
   isNavbarOpen: boolean;
+  isModal?: boolean;
 };
 
-export default function FooterSection({ lang, isNavbarOpen }: Props) {
+export default function FooterSection({
+  lang,
+  isNavbarOpen,
+  isModal = false,
+}: Props) {
   const { windowSize } = useWindowSize();
 
   const translations = { ru, ua, en } as const;
   const t = translations[lang as keyof typeof translations];
 
-  return isNavbarOpen && (windowSize! > 1024 || windowSize! < 640) ? (
+  return (isNavbarOpen && (windowSize! > 1024 || windowSize! < 640)) ||
+    isModal ? (
     <div className="flex flex-col gap-3 px-3 pl-6 border-gray-5 py-3 font-medium text-[0.8rem] text-gray-4">
       {" "}
       <div className="flex gap-x-2 flex-wrap">

@@ -18,12 +18,14 @@ type Props = {
   subscriptions: Subscription[];
   lang: Lang;
   isNavbarOpen: boolean;
+  isModal?: boolean;
 };
 
 export default function SubscriptionSection({
   subscriptions,
   lang,
   isNavbarOpen,
+  isModal = false,
 }: Props) {
   const [showAll, setShowAll] = useState(false);
 
@@ -32,7 +34,8 @@ export default function SubscriptionSection({
   const translations = { ru, ua, en } as const;
   const t = translations[lang as keyof typeof translations];
 
-  return isNavbarOpen && (windowSize! > 1024 || windowSize! < 640) ? (
+  return (isNavbarOpen && (windowSize! > 1024 || windowSize! < 640)) ||
+    isModal ? (
     <div className="px-3 border-b-1 border-gray-5 py-3">
       <SubscriptionBtn title={t.Navigation.Subscriptions} />
 

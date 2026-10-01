@@ -2,13 +2,13 @@ import { getAllTags } from "@/lib/data/tags";
 import Spacer from "./Spacer/Spacer";
 import Videos from "./Videos/Videos";
 import Tags from "./Tags/Tags";
-import { getAllVideos } from "@/lib/data/videos";
+import { getAllVideos, getVideos } from "@/lib/data/videos";
 import { Lang } from "@/types/language";
 
 export default async function Main({ lang }: { lang: Lang }) {
   const tags = await getAllTags();
 
-  const videosList = await getAllVideos();
+  const videosList = await getVideos(1);
 
   const regularStreams = [
     {

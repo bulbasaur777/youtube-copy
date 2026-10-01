@@ -11,15 +11,21 @@ import { useWindowSize } from "@/hooks/useWindowSize";
 type Props = {
   lang: Lang;
   isNavbarOpen: boolean;
+  isModal?: boolean;
 };
 
-export default function ReportSection({ lang, isNavbarOpen }: Props) {
+export default function ReportSection({
+  lang,
+  isNavbarOpen,
+  isModal = false,
+}: Props) {
   const { windowSize } = useWindowSize();
 
   const translations = { ru, ua, en } as const;
   const t = translations[lang as keyof typeof translations];
 
-  return isNavbarOpen && (windowSize! > 1024 || windowSize! < 640) ? (
+  return (isNavbarOpen && (windowSize! > 1024 || windowSize! < 640)) ||
+    isModal ? (
     <div className="px-3 border-b-1 border-gray-5 py-3">
       {" "}
       <NavItem title={t.Navigation["Report history"]} path={<ReportIcon />} />

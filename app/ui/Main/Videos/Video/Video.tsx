@@ -6,6 +6,8 @@ import en from "@/locales/en/en.json";
 import { Lang } from "@/types/language";
 
 import { useState, ComponentPropsWithoutRef } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { formatTimeAgo, formatViews } from "@/lib/services/formatTime";
 import VideoContexMenu from "./VideoContextMenu/VideoContextMenu";
@@ -40,6 +42,12 @@ export default function Video({
 }: Props) {
   const [isHovered, setIsHovered] = useState(false);
 
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/watch`);
+  };
+
   const t = translations[language];
 
   return (
@@ -68,11 +76,19 @@ export default function Video({
       />
 
       {/* Video Info */}
-      <div className="relative flex gap-1 items-start w-full mt-3.5 text-text z-1 select-none">
+      <div
+        className="relative flex gap-1 items-start w-full mt-3.5 text-text z-1 select-none"
+        onClick={handleCardClick}
+      >
         <div className="size-9 bg-[url('/pictures/avatar.png')] mr-2 rounded-full min-w-[36px]" />
         <div className="flex flex-col">
-          <div className="text-[1rem] font-medium pr-6">{title}</div>
-          <div className="text-text/80 text-[0.9rem] hover:text-text/90 transition-all duration-100">
+          <Link href="/watch" onClick={(event) => event.stopPropagation()}>
+            <div className="text-[1rem] font-medium pr-6">{title}</div>
+          </Link>
+          <div
+            className="text-text/80 text-[0.9rem] hover:text-text/90 transition-all duration-100"
+            onClick={(event) => event.stopPropagation()}
+          >
             {author}
           </div>
           <div className="text-text/80 text-[0.9rem]">
@@ -81,7 +97,9 @@ export default function Video({
             {formatTimeAgo(createdAt, language, t["Time and Views"])}
           </div>
         </div>
-        <VideoContexMenu />
+        <div onClick={(event) => event.stopPropagation()}>
+          <VideoContexMenu />
+        </div>
       </div>
     </motion.div>
   );

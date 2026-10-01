@@ -9,9 +9,10 @@ import { type Lang } from "./types/language";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { Theme } from "@/types/theme";
 import { NavbarProvider } from "./contexts/NavbarContext";
+import { ModalNavbarProvider } from "./contexts/ModalNavbarContext";
 
 const roboto = Roboto({
   subsets: ["latin", "cyrillic"],
@@ -42,13 +43,15 @@ export default async function RootLayout({
         <ThemeProvider initialTheme={theme}>
           <LanguageProvider initialLang={lang}>
             <NavbarProvider initialState={navbarState}>
-              <div className={`flex h-screen flex-col`}>
-                <Header />
-                <div className="flex flex-1 bg-bg">
-                  <Navigation lang={lang} />
-                  {children}
+              <ModalNavbarProvider>
+                <div className={`flex h-screen flex-col`}>
+                  <Header />
+                  <div className="flex flex-1 bg-bg">
+                    <Navigation lang={lang} />
+                    {children}
+                  </div>
                 </div>
-              </div>
+              </ModalNavbarProvider>
             </NavbarProvider>
           </LanguageProvider>
         </ThemeProvider>

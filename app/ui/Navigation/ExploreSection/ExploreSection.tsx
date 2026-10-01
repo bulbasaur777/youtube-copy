@@ -19,9 +19,14 @@ import { useWindowSize } from "@/hooks/useWindowSize";
 type Props = {
   lang: Lang;
   isNavbarOpen: boolean;
+  isModal?: boolean;
 };
 
-export default function ExploreSection({ lang, isNavbarOpen }: Props) {
+export default function ExploreSection({
+  lang,
+  isNavbarOpen,
+  isModal = false,
+}: Props) {
   const [showAll, setShowAll] = useState(false);
 
   const { windowSize } = useWindowSize();
@@ -29,7 +34,8 @@ export default function ExploreSection({ lang, isNavbarOpen }: Props) {
   const translations = { ru, ua, en } as const;
   const t = translations[lang as keyof typeof translations];
 
-  return isNavbarOpen && (windowSize! > 1024 || windowSize! < 640) ? (
+  return (isNavbarOpen && (windowSize! > 1024 || windowSize! < 640)) ||
+    isModal ? (
     <div className="px-3 border-b-1 border-gray-5 py-3">
       <div className="ml-3 font-medium my-1 text-[1.05rem]">
         {t.Navigation["Explore"]}
