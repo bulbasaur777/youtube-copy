@@ -16,6 +16,7 @@ import VideoPreview from "./VideoPreview/VideoPreview";
 const translations = { ru, ua, en } as const;
 
 type Props = ComponentPropsWithoutRef<"div"> & {
+  id: string;
   title: string;
   author: string;
   duration: number;
@@ -29,6 +30,7 @@ type Props = ComponentPropsWithoutRef<"div"> & {
 };
 
 export default function Video({
+  id,
   title,
   author,
   duration,
@@ -45,7 +47,7 @@ export default function Video({
   const router = useRouter();
 
   const handleCardClick = () => {
-    router.push(`/watch`);
+    router.push(`/watch?videoId=${encodeURIComponent(id)}`);
   };
 
   const t = translations[language];
@@ -68,6 +70,7 @@ export default function Video({
       ></div>
 
       <VideoPreview
+        videoId={id}
         videoUrl={videoUrl}
         previewVideoUrl={previewVideoUrl}
         thumbnailUrl={thumbnailUrl}
@@ -82,7 +85,10 @@ export default function Video({
       >
         <div className="size-9 bg-[url('/pictures/avatar.png')] mr-2 rounded-full min-w-[36px]" />
         <div className="flex flex-col">
-          <Link href="/watch" onClick={(event) => event.stopPropagation()}>
+          <Link
+            href={`/watch?videoId=${encodeURIComponent(id)}`}
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className="text-[1rem] font-medium pr-6">{title}</div>
           </Link>
           <div

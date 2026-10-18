@@ -1,0 +1,103 @@
+"use client";
+
+import { useState } from "react";
+import { useAutoHideScrollbar } from "./hooks/useAutoHideScrollbar";
+import Video from "./Video/Video";
+import { useInfiniteScroll } from "./hooks/useInfiniteScrolls";
+import VideoSkeleton from "./Video/VideoSkeleton/VideoSkeleton";
+import { getAllVideos, getVideos } from "@/lib/data/videos";
+import { Lang } from "@/types/language";
+
+type Props = {
+  videosList: Awaited<ReturnType<typeof getAllVideos>>;
+  lang: Lang;
+};
+
+export default function Videos({ videosList, lang }: Props) {
+  const { scrollRef, showScrollbar } = useAutoHideScrollbar(1000);
+  const [videos, setVideos] = useState(videosList);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [isLastPage, setIsLastPage] = useState(false);
+
+  const fetchStreams = async () => {
+    const newVideos = await getVideos(page + 1);
+    console.log(newVideos);
+
+    if (newVideos.length > 0) {
+      setPage((page) => page + 1);
+      setVideos((prev) => [...prev, ...newVideos]);
+    } else {
+      setIsLastPage(true);
+    }
+
+    setLoading(false);
+  };
+
+  useInfiniteScroll({
+    callback: () => {
+      if (!loading && !isLastPage) {
+        setLoading(true);
+        fetchStreams();
+      }
+    },
+    buffer: 500,
+  });
+
+  return (
+    <div
+      ref={scrollRef}
+      className={`flex flex-col gap-6 w-full bg-bg text-text mt-3
+        scrollbar-thumb-only ${
+          showScrollbar ? "scrollbar-visible" : "scrollbar-hidden"
+        }`}
+    >
+      <div
+        className={`grid grid-cols-1 gap-x-2 gap-y-2 w-full bg-bg text-black
+                  ${isLastPage && "mb-5"}
+        `}
+      >
+        {videos.map((video, i) => {
+          return (
+            <Video
+              key={video.id}
+              id={video.id}
+              title={video.title}
+              author={video.author.name}
+              duration={video.duration}
+              bgColor={video.color}
+              thumbnailUrl={video.thumbnailUrl}
+              videoUrl={
+                video.variants.find((variant) => variant.height === 720)?.url ??
+                video.variants[0]?.url ??
+                ""
+              }
+              previewVideoUrl={
+                video.variants.find((variant) => variant.height === 144)?.url ??
+                video.variants[0]?.url ??
+                ""
+              }
+              viewsCounts={video.viewsCount}
+              createdAt={video.createdAt}
+              language={lang}
+            />
+          );
+        })}
+
+        {loading && (
+          <>
+            {Array.from({ length: 10 }).map((_i, index) => {
+              return (
+                <VideoSkeleton
+                  key={index}
+                  opacity={3}
+                  timer={50 + index * 50}
+                />
+              );
+            })}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

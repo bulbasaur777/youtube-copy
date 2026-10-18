@@ -5,6 +5,7 @@ import MutedIcon from "./icons/MutedIcon";
 import Link from "next/link";
 
 type Props = {
+  videoId: string;
   videoUrl: string;
   previewVideoUrl: string | null;
   thumbnailUrl: string | null;
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export default function VideoPreview({
+  videoId,
   videoUrl,
   previewVideoUrl,
   thumbnailUrl,
@@ -43,7 +45,7 @@ export default function VideoPreview({
 
   return (
     <div className="relative aspect-video overflow-hidden rounded-xl">
-      <Link href="/watch">
+      <Link href={`/watch?videoId=${encodeURIComponent(videoId)}`}>
         {/* Main video */}
         <video
           ref={videoRef}

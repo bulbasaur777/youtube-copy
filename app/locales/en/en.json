@@ -135,6 +135,14 @@
       "years": {
         "one": "year",
         "other": "years"
+      },
+      "compact": {
+        "minute": "min",
+        "hour": "hr",
+        "day": "day",
+        "week": "wk",
+        "month": "mo",
+        "year": "yr"
       }
     }
   }

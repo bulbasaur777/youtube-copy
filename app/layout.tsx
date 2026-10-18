@@ -9,10 +9,12 @@ import { type Lang } from "./types/language";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { Theme } from "@/types/theme";
 import { NavbarProvider } from "./contexts/NavbarContext";
 import { ModalNavbarProvider } from "./contexts/ModalNavbarContext";
+import { VideoProvider } from "./contexts/VideoContext";
+import { VideoLayoutProvider } from "./contexts/VideoLayoutContext";
 
 const roboto = Roboto({
   subsets: ["latin", "cyrillic"],
@@ -30,10 +32,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const lang = ((await cookies()).get("lang")?.value || "ru") as Lang;
-  const theme = ((await cookies()).get("theme")?.value || "light") as Theme;
+  const cookieStore = await cookies();
+  const lang = (cookieStore.get("lang")?.value || "ru") as Lang;
+  const theme = (cookieStore.get("theme")?.value || "light") as Theme;
+  const mainVideoMode = cookieStore.get("mainVideoMode")?.value === "true";
+  const qualityCookie = cookieStore.get("videoQuality")?.value;
+  const initialQuality = qualityCookie === "144p" ? "144p" : "720p";
 
-  const navbarCookieState = (await cookies()).get("navbarIsOpen")?.value;
+  const navbarCookieState = cookieStore.get("navbarIsOpen")?.value;
   const navbarState =
     navbarCookieState === undefined ? true : navbarCookieState === "true";
 
@@ -44,13 +50,20 @@ export default async function RootLayout({
           <LanguageProvider initialLang={lang}>
             <NavbarProvider initialState={navbarState}>
               <ModalNavbarProvider>
-                <div className={`flex h-screen flex-col`}>
-                  <Header />
-                  <div className="flex flex-1 bg-bg">
-                    <Navigation lang={lang} />
-                    {children}
-                  </div>
-                </div>
+                <VideoProvider
+                  initialMainVideoMode={mainVideoMode}
+                  initialQuality={initialQuality}
+                >
+                  <VideoLayoutProvider>
+                    <div className={`flex h-screen flex-col`}>
+                      <Header />
+                      <div className="flex flex-1 bg-bg">
+                        <Navigation lang={lang} />
+                        {children}
+                      </div>
+                    </div>
+                  </VideoLayoutProvider>
+                </VideoProvider>
               </ModalNavbarProvider>
             </NavbarProvider>
           </LanguageProvider>

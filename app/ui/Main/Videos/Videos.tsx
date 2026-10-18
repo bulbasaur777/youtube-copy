@@ -61,13 +61,22 @@ export default function Videos({ videosList, lang }: Props) {
           return (
             <Video
               key={video.id}
+              id={video.id}
               title={video.title}
               author={video.author.name}
               duration={video.duration}
               bgColor={video.color}
               thumbnailUrl={video.thumbnailUrl}
-              videoUrl={video.videoUrl}
-              previewVideoUrl={video.previewVideoUrl}
+              videoUrl={
+                video.variants.find((variant) => variant.height === 720)?.url ??
+                video.variants[0]?.url ??
+                ""
+              }
+              previewVideoUrl={
+                video.variants.find((variant) => variant.height === 144)?.url ??
+                video.variants[0]?.url ??
+                ""
+              }
               viewsCounts={video.viewsCount}
               createdAt={video.createdAt}
               language={lang}

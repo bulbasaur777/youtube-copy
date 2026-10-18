@@ -42,7 +42,7 @@ export default function SearchInput(props: SearchInputProps) {
         <SearchContent isOpen={isOpen} />
       </div>
 
-      <div className="flex w-[64px] h-full justify-center items-center border-1 border-l-0 border-gray-5 rounded-r-3xl bg-gray-10 hover:bg-gray-3 transition-all duration-300">
+      <div className="flex w-[64px] h-full justify-center items-center border-1 border-l-0 border-gray-5 rounded-r-3xl bg-gray-10 hover:bg-gray-3">
         <button className="flex items-center justify-center w-full h-full cursor-pointer">
           <svg
             aria-hidden="true"
@@ -58,7 +58,7 @@ export default function SearchInput(props: SearchInputProps) {
       </div>
       <div className="flex justify-end items-center w-[50px] h-full">
         <TooltipUI content={`Голосовой поиск`}>
-          <PiMicrophone className="text-[36px] px-1.5 bg-gray-10 hover:bg-gray-9 transition-all duration-150 rounded-2xl cursor-pointer " />
+          <PiMicrophone className="text-[36px] px-1.5 bg-gray-10 hover:bg-gray-9 rounded-2xl cursor-pointer " />
         </TooltipUI>
       </div>
     </div>

@@ -14,7 +14,7 @@ export default function TooltipUI({ content, children }: TooltipProps) {
         <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
         <Tooltip.Portal>
           <Tooltip.Content
-            className="select-none rounded bg-gray-4/85 px-2 py-2.5 mt-2.5 text-xs leading-none text-bg z-10
+            className="select-none rounded bg-gray-4/90 px-2 py-2.5 mt-2.5 text-xs leading-none text-bg z-10
                        will-change-[transform,opacity]
                        data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade
                        data-[state=closed]:data-[side=bottom]:animate-slideDownAndFade"

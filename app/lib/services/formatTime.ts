@@ -22,6 +22,7 @@ type TimeTranslations = {
     years: Record<string, string>;
   };
 };
+
 export function formatTimeAgo(
   createdTime: Date,
   locale: string,

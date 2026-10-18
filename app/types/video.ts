@@ -5,7 +5,7 @@ export type Video = {
   id: string;
   title: string;
   description: string;
-  videoUrl: string;
+  variants: { height: number; url: string }[];
   thumbnailUrl?: string;
   duration: number;
   createdAt: Date;

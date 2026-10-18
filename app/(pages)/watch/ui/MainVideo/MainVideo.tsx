@@ -1,0 +1,270 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useVideo } from "@/contexts/VideoContext";
+import { useVideoLayout } from "@/contexts/VideoLayoutContext";
+import type { VideoSourceVariant } from "@/hooks/useVideoController";
+
+import VolumeBar from "./VolumeBar/VolumeBar";
+import Time from "./Time/Time";
+import SwitchReplay from "./SwitchReplay/SwitchReplay";
+import Playback from "./Playback/Playback";
+import Volume from "./Volume/Volume";
+import SwitchSubtitles from "./SwitchSubtitles/SwitchSubtitles";
+import VideoSettings from "./VideoSettings/VideoSettings";
+import VideoMode from "./VideoMode/VideoMode";
+import FullScreenMode from "./FullScreenMode/FullScreenMode";
+import { formatTime } from "@/lib/services/formatTime";
+
+export default function MainVideo({
+  isFullWidth = false,
+  videoId,
+  videoVariants,
+}: {
+  isFullWidth?: boolean;
+  videoId: string;
+  videoVariants: VideoSourceVariant[];
+}) {
+  const [isEndlessMode, setIsEndlessMode] = useState(true);
+  const replayTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const {
+    videoRef,
+    progressBarRef,
+    playerContainerRef,
+
+    isPlaying,
+    isMuted,
+    isFullWidthVideo,
+    isFullScreenMode,
+    quality,
+    availableQualities,
+    videoSrc,
+    previewVideoSrc,
+    changeQuality,
+    setVideoVariants,
+    resetPlayback,
+
+    progress,
+    currentTime,
+    videoDuration,
+
+    isBarHovered,
+    isScrubbing,
+    previewProgress,
+    canvasRef,
+    previewTime,
+    setPreviewVideoRef,
+
+    togglePlayback,
+    toggleMute,
+    toggleFullScreen,
+
+    handlePlay,
+    handlePause,
+    handleEnded,
+    handleLoadedMetadata,
+    handleTimeUpdate,
+
+    handleProgressMouseEnter,
+    handleProgressMouseLeave,
+    handleProgressMouseMove,
+    handleProgressMouseDown,
+  } = useVideo();
+
+  const { handleChangeMode, isAnimating } = useVideoLayout();
+
+  useEffect(() => {
+    resetPlayback();
+  }, [resetPlayback]);
+
+  useEffect(() => {
+    setVideoVariants(videoVariants);
+  }, [setVideoVariants, videoVariants]);
+
+  useEffect(() => {
+    return () => {
+      if (replayTimeoutRef.current !== null) {
+        clearTimeout(replayTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (replayTimeoutRef.current !== null) {
+      clearTimeout(replayTimeoutRef.current);
+      replayTimeoutRef.current = null;
+    }
+  }, [videoId]);
+
+  const handleVideoEnded = () => {
+    handleEnded();
+
+    if (!isEndlessMode) return;
+
+    if (replayTimeoutRef.current !== null) {
+      clearTimeout(replayTimeoutRef.current);
+    }
+
+    replayTimeoutRef.current = setTimeout(() => {
+      replayTimeoutRef.current = null;
+      const video = videoRef.current;
+      if (!video) return;
+
+      video.currentTime = 0;
+      void video.play().catch((error) => {
+        console.error("Video could not be replayed:", error);
+      });
+    }, 3000);
+  };
+
+  const handleReplayModeChange = (nextIsEndlessMode: boolean) => {
+    setIsEndlessMode(nextIsEndlessMode);
+
+    if (!nextIsEndlessMode && replayTimeoutRef.current !== null) {
+      clearTimeout(replayTimeoutRef.current);
+      replayTimeoutRef.current = null;
+    }
+  };
+
+  return (
+    <div
+      ref={playerContainerRef}
+      className={`${isFullWidth ? "dark" : ""} group relative z-4 bg-bg
+        ${
+          isFullScreenMode
+            ? "h-screen w-screen overflow-hidden rounded-none bg-black"
+            : ""
+        }`}
+    >
+      <div
+        className={`
+          absolute bottom-0 left-0 right-0 z-10 h-[75px] w-full rounded-b-2xl bg-black/20 px-4
+          ${isFullScreenMode ? "rounded-none" : ""}
+        `}
+      >
+        <div
+          ref={progressBarRef}
+          className="group/bar relative cursor-pointer py-3"
+          onMouseEnter={handleProgressMouseEnter}
+          onMouseLeave={handleProgressMouseLeave}
+          onMouseMove={handleProgressMouseMove}
+          onMouseDown={handleProgressMouseDown}
+        >
+          <div className="relative h-1">
+            <div className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-white/30 transition-transform duration-200 group-hover/bar:scale-y-[2]">
+              <div
+                className="h-full rounded-full bg-red-500"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+
+            <div
+              className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-md transition-transform duration-200 group-hover/bar:scale-150"
+              style={{ left: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="mt-1 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Playback isPlaying={isPlaying} onToggle={togglePlayback} />
+
+            <Volume isMuted={isMuted} handleSwitchSound={toggleMute} />
+
+            <VolumeBar />
+
+            <Time
+              currentTime={Math.round(currentTime)}
+              duration={Math.round(videoDuration)}
+            />
+          </div>
+
+          <div className="flex items-center gap-6 rounded-full px-1 text-white">
+            <SwitchReplay
+              isEndlessMode={isEndlessMode}
+              onToggle={handleReplayModeChange}
+            />
+
+            <SwitchSubtitles isSubtitlesOn={true} onToggle={() => {}} />
+
+            <VideoSettings
+              quality={quality}
+              availableQualities={availableQualities}
+              onQualityChange={changeQuality}
+            />
+
+            {!isFullScreenMode && (
+              <VideoMode
+                isFullWidthModeOn={isFullWidthVideo}
+                onToggle={handleChangeMode}
+                disabled={isAnimating}
+              />
+            )}
+
+            <FullScreenMode
+              isFullScreenMode={isFullScreenMode}
+              onToggle={toggleFullScreen}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Preview frame */}
+      {(isBarHovered || isScrubbing) && previewProgress !== null && (
+        <div
+          className="absolute bottom-20 z-20 pointer-events-none"
+          style={{
+            left: `clamp(90px, ${previewProgress}% , calc(100% - 90px))`,
+            transform: "translateX(-50%)",
+          }}
+        >
+          <div className="relative">
+            <canvas
+              ref={canvasRef}
+              className="w-40 aspect-video object-cover rounded-md shadow-lg border border-white/20"
+            />
+            <div className="absolute bottom-1 left-1 px-1.5 py-0.5 text-xs bg-black/70 text-white rounded">
+              {formatTime(Math.round(previewTime))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Preview video */}
+      <video
+        ref={setPreviewVideoRef}
+        src={previewVideoSrc || undefined}
+        muted
+        playsInline
+        preload="auto"
+        className="hidden"
+      />
+
+      <video
+        key={videoId}
+        ref={videoRef}
+        muted={isMuted}
+        onLoadedMetadata={handleLoadedMetadata}
+        onTimeUpdate={handleTimeUpdate}
+        onPlay={handlePlay}
+        onPause={handlePause}
+        onEnded={handleVideoEnded}
+        onClick={togglePlayback}
+        onDoubleClick={toggleFullScreen}
+        src={videoSrc || undefined}
+        style={{ aspectRatio: "16 / 9" }}
+        className={`
+          w-full aspect-video
+          ${
+            isFullScreenMode
+              ? "h-full max-h-none rounded-none object-contain"
+              : isFullWidth
+                ? "max-h-[82vh]"
+                : "rounded-2xl"
+          }
+        `}
+      />
+    </div>
+  );
+}

@@ -16,6 +16,8 @@ export function useVideoPreview({ isHovered, duration }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const playTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const playAttemptRef = useRef(0);
+  const isHoveredRef = useRef(isHovered);
   const previewFrameRequestRef = useRef<number | null>(null);
   const selectedTimeRef = useRef<number | null>(null);
   const wasPlayingRef = useRef(false);
@@ -25,6 +27,8 @@ export function useVideoPreview({ isHovered, duration }: Props) {
   const [isBarHovered, setIsBarHovered] = useState(false);
   const [previewProgress, setPreviewProgress] = useState<number | null>(null); // Положение курсора на progress bar в процентах
   const [isScrubbing, setIsScrubbing] = useState(false); // Идёт ли сейчас drag маркера
+
+  isHoveredRef.current = isHovered;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -36,19 +40,34 @@ export function useVideoPreview({ isHovered, duration }: Props) {
       playTimeoutRef.current = null;
     }
 
+    const playAttempt = ++playAttemptRef.current;
+
     if (!isHovered) {
-      if (!isPlaying) return;
       video.pause();
       setIsPlaying(false);
-
       return;
     }
 
     playTimeoutRef.current = setTimeout(async () => {
       try {
         await video.play();
+
+        if (playAttempt !== playAttemptRef.current || !isHoveredRef.current) {
+          if (!isHoveredRef.current) {
+            video.pause();
+          }
+          return;
+        }
+
         setIsPlaying(true);
       } catch (error) {
+        if (
+          playAttempt !== playAttemptRef.current ||
+          (error instanceof DOMException && error.name === "AbortError")
+        ) {
+          return;
+        }
+
         console.error("Video preview could not be played:", error);
       }
     }, 600);
@@ -58,8 +77,8 @@ export function useVideoPreview({ isHovered, duration }: Props) {
         clearTimeout(playTimeoutRef.current);
         playTimeoutRef.current = null;
       }
+      playAttemptRef.current += 1;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHovered]);
 
   const handleTimeUpdate = () => {

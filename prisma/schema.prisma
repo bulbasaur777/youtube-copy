@@ -31,9 +31,7 @@ model Video {
   id           String  @id @default(uuid())
   title        String
   description  String  @db.Text
-  videoUrl     String
   thumbnailUrl String?
-  previewVideoUrl  String?
   color        String?
 
   duration      Int // Продолжительность в секундах
@@ -50,7 +48,20 @@ model Video {
   authorId String
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-  tags Tag[]
+  tags     Tag[]
+  variants VideoVariant[]
+}
+
+model VideoVariant {
+  id       String  @id @default(uuid())
+  videoId  String
+  height   Int
+  url      String  @db.Text
+  mimeType String?
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([videoId, height])
 }
 
 model Tag {
