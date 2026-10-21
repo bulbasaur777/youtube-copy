@@ -26,7 +26,7 @@ export default function VideoPreview({
   } = useVideoPreview({ isHovered });
 
   return (
-    <div className="relative w-[60%] aspect-video overflow-hidden rounded-xl">
+    <div className="relative aspect-video w-full overflow-hidden rounded-xl lg:w-[60%]">
       <Link href={`/watch?videoId=${encodeURIComponent(videoId)}`}>
         {/* Main video */}
         <video

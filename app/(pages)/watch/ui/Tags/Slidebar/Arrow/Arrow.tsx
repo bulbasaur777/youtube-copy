@@ -30,7 +30,7 @@ export default function Arrow({
 
   return createPortal(
     <div
-      className={`group flex items-center justify-center absolute -top-1 z-1 w-10 h-10 rounded-full hover:bg-gray-2 duration-200 ${
+      className={`group hidden md:flex items-center justify-center absolute -top-1 z-1 w-10 h-10 rounded-full hover:bg-gray-2 duration-200 ${
         direction === "left" ? "-left-3" : "-right-3"
       }`}
     >

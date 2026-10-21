@@ -477,9 +477,33 @@ export function useVideoController({
    * --------------------------------
    */
 
+  useEffect(() => {
+    const fullWidthMediaQuery = window.matchMedia("(max-width: 1023px)");
+
+    const enforceFullWidthOnSmallScreens = () => {
+      if (!fullWidthMediaQuery.matches || isFullWidthVideo) return;
+
+      setIsFullWidthVideo(true);
+      document.cookie =
+        "mainVideoMode=true; path=/; max-age=31536000; SameSite=Lax";
+    };
+
+    enforceFullWidthOnSmallScreens();
+    fullWidthMediaQuery.addEventListener("change", enforceFullWidthOnSmallScreens);
+
+    return () => {
+      fullWidthMediaQuery.removeEventListener(
+        "change",
+        enforceFullWidthOnSmallScreens,
+      );
+    };
+  }, [isFullWidthVideo]);
+
   const changeMainVideoMode = useCallback(() => {
     setIsFullWidthVideo((prev) => {
-      const next = !prev;
+      const next = window.matchMedia("(max-width: 1023px)").matches
+        ? true
+        : !prev;
 
       document.cookie = `mainVideoMode=${next}; path=/; max-age=31536000; SameSite=Lax`;
 

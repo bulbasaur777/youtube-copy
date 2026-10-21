@@ -50,7 +50,7 @@ export default function Video({
 
   return (
     <motion.div
-      className="flex relative group cursor-pointer"
+      className="relative group flex cursor-pointer flex-col pb-2 lg:flex-row"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       whileHover="hover"
@@ -75,16 +75,17 @@ export default function Video({
 
       {/* Video Info */}
       <div
-        className="relative flex gap-1 items-start w-[40%] min-w-0 text-text z-1 px-2 select-none"
+        className="relative z-1 mt-3.5 flex w-full min-w-0 items-start gap-1 px-1 text-text select-none lg:mt-0 lg:w-[40%] lg:px-2"
         onClick={handleCardClick}
       >
-        <div className="flex gap-y-1 min-w-0 flex-1 flex-col">
+        <div className="mr-2 size-9 min-w-9 rounded-full bg-[url('/pictures/avatar.png')] bg-cover lg:hidden" />
+        <div className="flex gap-y-0 lg:gap-y-1  min-w-0 flex-1 flex-col">
           <Link
             href={`/watch?videoId=${encodeURIComponent(id)}`}
             onClick={(event) => event.stopPropagation()}
           >
             <div
-              className="text-sm font-medium"
+              className="text-[1rem] font-medium lg:text-sm"
               style={{
                 display: "-webkit-box",
                 WebkitBoxOrient: "vertical",
@@ -96,12 +97,12 @@ export default function Video({
             </div>
           </Link>
           <div
-            className="text-text/80 text-xs hover:text-text/90 transition-all duration-100"
+            className="text-[0.9rem] text-text/80 transition-all duration-100 hover:text-text/90 lg:text-xs"
             onClick={(event) => event.stopPropagation()}
           >
             {author}
           </div>
-          <div className="min-w-0 truncate text-text/80 text-xs">
+          <div className="min-w-0 truncate text-[0.9rem] text-text/80 lg:text-xs">
             {formatViewCount(viewsCounts ?? 0, language)}{" "}
             <span className="font-bold">⋅</span>{" "}
             {formatCompactTimeAgo(createdAt, language)}

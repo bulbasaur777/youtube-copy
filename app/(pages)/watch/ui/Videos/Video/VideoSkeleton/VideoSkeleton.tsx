@@ -21,16 +21,17 @@ export default function VideoSkeleton({
 
   return (
     <div
-      className={`flex relative group cursor-pointer duration-100! ${
+      className={`relative group flex cursor-pointer flex-col pb-2 duration-100! lg:flex-row ${
         isStart ? "animate-pulse" : ""
       }`}
       style={{ opacity: `${opacity}%` }}
     >
-      <div className="relative w-[60%] aspect-video overflow-hidden rounded-xl bg-gray-4">
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-4 lg:w-[60%]">
         <div className="absolute inset-0 bg-gray-4" />
       </div>
 
-      <div className="relative flex gap-1 items-start w-[40%] min-w-0 z-1 px-2">
+      <div className="relative z-1 mt-3.5 flex w-full min-w-0 items-start gap-1 px-1 lg:mt-0 lg:w-[40%] lg:px-2">
+        <div className="mr-2 size-9 min-w-9 rounded-full bg-gray-4 lg:hidden" />
         <div className="flex gap-y-1 min-w-0 flex-1 flex-col">
           <div className="flex flex-col gap-1">
             <div className="h-3.5 w-[95%] rounded-sm bg-gray-4" />

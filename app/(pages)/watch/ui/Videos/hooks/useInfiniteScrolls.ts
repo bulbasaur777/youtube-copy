@@ -27,15 +27,6 @@ export const useInfiniteScroll = ({ callback, buffer = 200, elem }: Args) => {
           : (targetElem as HTMLElement).scrollHeight;
 
       if (scrollTop + clientHeight >= scrollHeight - buffer) {
-        console.log(
-          "scrollTop: " +
-            scrollTop +
-            "; clientHeight: " +
-            clientHeight +
-            "; scrollHeight: " +
-            scrollHeight,
-          targetElem,
-        );
         callback();
       }
     };

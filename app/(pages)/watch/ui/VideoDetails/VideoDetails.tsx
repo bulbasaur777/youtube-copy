@@ -14,15 +14,10 @@ export default function VideoDetails({ video, lang }: VideoDetailsProps) {
     <section className="flex flex-col gap-3 text-text">
       {video && (
         <>
-          <h1 className="text-xl font-bold leading-7 tracking-[-0.02em]">
+          <h1 className="text-lg sm:text-xl font-bold leading-7 tracking-[-0.02em]">
             {video.title}
           </h1>
-          <VideoActions
-            video={video}
-            lang={lang}
-            text={text}
-            state={state}
-          />
+          <VideoActions video={video} lang={lang} text={text} state={state} />
           <VideoDescription
             video={video}
             lang={lang}

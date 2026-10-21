@@ -28,7 +28,7 @@ export default function VideoMode({
             ? "Switch to normal mode"
             : "Switch to full-width mode"
         }
-        className="cursor-pointer disabled:cursor-default"
+        className="hidden cursor-pointer items-center lg:flex disabled:cursor-default"
       >
         {isFullWidthModeOn ? (
           <VideoModeNormalIcon />

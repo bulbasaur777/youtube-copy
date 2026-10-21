@@ -139,13 +139,14 @@ export default function MainVideo({
     >
       <div
         className={`
-          absolute bottom-0 left-0 right-0 z-10 h-[75px] w-full rounded-b-2xl bg-black/20 px-4
+          absolute bottom-0 left-0 right-0 z-10 h-[68px] w-full rounded-b-none bg-black/20 px-2 sm:h-[75px] sm:px-4
+          ${isFullWidth ? "" : "sm:rounded-b-2xl"}
           ${isFullScreenMode ? "rounded-none" : ""}
         `}
       >
         <div
           ref={progressBarRef}
-          className="group/bar relative cursor-pointer py-3"
+          className="group/bar relative cursor-pointer py-2 sm:py-3"
           onMouseEnter={handleProgressMouseEnter}
           onMouseLeave={handleProgressMouseLeave}
           onMouseMove={handleProgressMouseMove}
@@ -167,12 +168,14 @@ export default function MainVideo({
         </div>
 
         <div className="mt-1 flex items-center justify-between">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-6">
             <Playback isPlaying={isPlaying} onToggle={togglePlayback} />
 
             <Volume isMuted={isMuted} handleSwitchSound={toggleMute} />
 
-            <VolumeBar />
+            <div className="hidden sm:block">
+              <VolumeBar />
+            </div>
 
             <Time
               currentTime={Math.round(currentTime)}
@@ -180,7 +183,7 @@ export default function MainVideo({
             />
           </div>
 
-          <div className="flex items-center gap-6 rounded-full px-1 text-white">
+          <div className="flex items-center gap-2 rounded-full px-1 text-white sm:gap-6">
             <SwitchReplay
               isEndlessMode={isEndlessMode}
               onToggle={handleReplayModeChange}
@@ -260,7 +263,7 @@ export default function MainVideo({
             isFullScreenMode
               ? "h-full max-h-none rounded-none object-contain"
               : isFullWidth
-                ? "max-h-[82vh]"
+                ? "max-h-[82vh] rounded-none"
                 : "rounded-2xl"
           }
         `}

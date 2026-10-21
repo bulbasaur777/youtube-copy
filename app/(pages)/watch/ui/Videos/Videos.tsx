@@ -22,7 +22,6 @@ export default function Videos({ videosList, lang }: Props) {
 
   const fetchStreams = async () => {
     const newVideos = await getVideos(page + 1);
-    console.log(newVideos);
 
     if (newVideos.length > 0) {
       setPage((page) => page + 1);
@@ -53,7 +52,7 @@ export default function Videos({ videosList, lang }: Props) {
         }`}
     >
       <div
-        className={`grid grid-cols-1 gap-x-2 gap-y-2 w-full bg-bg text-black
+        className={`grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-x-2 gap-y-6 w-full bg-bg text-black lg:grid-cols-1
                   ${isLastPage && "mb-5"}
         `}
       >
