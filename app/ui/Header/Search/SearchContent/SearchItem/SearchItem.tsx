@@ -13,9 +13,7 @@ export default function SearchItem({ item }: { item: string }) {
 
       <div className="flex items-center gap-1">
         <div className="bg-text h-6.5 w-12 rounded-sm"></div>
-        <IoClose
-          className={`text-gray-4 text-[1.2em] mr-2 opacity-0 group-hover:opacity-100 transition-all duration-150`}
-        />
+        <IoClose className="text-gray-4 text-[1.2em] mr-2" />
       </div>
     </li>
   );

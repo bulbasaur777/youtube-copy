@@ -5,9 +5,16 @@ import { PiMicrophone } from "react-icons/pi";
 import { GrKeyboard } from "react-icons/gr";
 import TooltipUI from "../../ProfileBar/Tooltip/Tooltip";
 
-type SearchInputProps = React.InputHTMLAttributes<HTMLInputElement>;
+type SearchInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  searchContentClassName?: string;
+  showMicrophoneTooltip?: boolean;
+};
 
-export default function SearchInput(props: SearchInputProps) {
+export default function SearchInput({
+  searchContentClassName,
+  showMicrophoneTooltip = true,
+  ...props
+}: SearchInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useLang();
 
@@ -39,7 +46,7 @@ export default function SearchInput(props: SearchInputProps) {
         />
 
         <GrKeyboard className="absolute top-2.5 right-3 size-4.5 text-gray-4" />
-        <SearchContent isOpen={isOpen} />
+        <SearchContent isOpen={isOpen} className={searchContentClassName} />
       </div>
 
       <div className="flex w-[64px] h-full justify-center items-center border-1 border-l-0 border-gray-5 rounded-r-3xl bg-gray-10 hover:bg-gray-3">
@@ -57,9 +64,13 @@ export default function SearchInput(props: SearchInputProps) {
         </button>
       </div>
       <div className="flex justify-end items-center w-[50px] h-full">
-        <TooltipUI content={`Голосовой поиск`}>
+        {showMicrophoneTooltip ? (
+          <TooltipUI content={`Голосовой поиск`}>
+            <PiMicrophone className="text-[36px] px-1.5 bg-gray-10 hover:bg-gray-9 rounded-2xl cursor-pointer " />
+          </TooltipUI>
+        ) : (
           <PiMicrophone className="text-[36px] px-1.5 bg-gray-10 hover:bg-gray-9 rounded-2xl cursor-pointer " />
-        </TooltipUI>
+        )}
       </div>
     </div>
   );

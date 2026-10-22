@@ -12,7 +12,7 @@ const UserSettingButton = React.forwardRef<HTMLDivElement, Props>(
         ref={ref}
         {...props}
         className={`
-        group flex justify-center mr-3 bg-slate-600 text-white text-[1.1em] items-center relative w-8.5 h-8.5 rounded-full cursor-pointer
+        group flex justify-center sm:mr-3 bg-slate-600 text-white text-[1.1em] items-center relative w-8.5 h-8.5 rounded-full cursor-pointer
         ${open ? "" : ""} transition-all duration-300
       `}
       >

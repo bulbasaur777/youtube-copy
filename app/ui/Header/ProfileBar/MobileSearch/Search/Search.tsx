@@ -1,23 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import SearchContent from "./SearchContent/SearchContent";
-import SearchInput from "./SearchInput/SearchInput";
-import { SearchSeparator } from "./SearchSeparator/SearchSeparator";
+import SearchInput from "@/ui/Header/Search/SearchInput/SearchInput";
 
 export default function Search() {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <div className="flex justify-center min-w-[350px]">
+    <div className="flex w-full min-w-0 justify-center">
       <div className="relative w-full">
         <SearchInput
-          onFocus={() => setIsOpen(true)}
-          onBlur={() => setIsOpen(false)}
+          searchContentClassName="min-w-[calc(100vw-2rem)]"
+          showMicrophoneTooltip={false}
         />
-
-        <SearchContent isOpen={isOpen} />
-        <SearchSeparator isOpen={isOpen} />
       </div>
     </div>
   );

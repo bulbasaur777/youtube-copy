@@ -51,15 +51,6 @@ export default function MobileSearch() {
                 <div className="flex-inline items-center justify-center text-text px-4 mt-[14px]">
                   <Search />
                 </div>
-
-                {/* <Dialog.Close asChild>
-                  <button
-                    aria-label="Закрыть"
-                    className="absolute right-1 top-1 inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-4 hover:text-text cursor-pointer"
-                  >
-                    <Cross2Icon className="w-6 h-6" />
-                  </button>
-                </Dialog.Close> */}
               </motion.div>
             </Dialog.Content>
           </Dialog.Portal>
