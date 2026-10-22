@@ -23,7 +23,7 @@ export default function CreateMenu() {
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen} modal={false}>
       <DropdownMenu.Trigger asChild>
-        <div className="flex justify-center items-center pl-3 pr-4 py-1 bg-gray-10 hover:bg-gray-3 rounded-full cursor-pointer mr-1 text-[14.5px] font-medium">
+        <div className="hidden sm:flex justify-center items-center pl-3 pr-4 py-1 bg-gray-10 hover:bg-gray-3 rounded-full cursor-pointer mr-1 text-[14.5px] font-medium">
           <FiPlus className="size-6.5 mr-1" /> {t.Header["Create"]}
         </div>
       </DropdownMenu.Trigger>
