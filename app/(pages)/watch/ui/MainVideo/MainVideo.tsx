@@ -20,10 +20,12 @@ export default function MainVideo({
   isFullWidth = false,
   videoId,
   videoVariants,
+  duration,
 }: {
   isFullWidth?: boolean;
   videoId: string;
   videoVariants: VideoSourceVariant[];
+  duration: number;
 }) {
   const [isEndlessMode, setIsEndlessMode] = useState(true);
   const replayTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -79,8 +81,8 @@ export default function MainVideo({
   }, [resetPlayback]);
 
   useEffect(() => {
-    setVideoVariants(videoVariants);
-  }, [setVideoVariants, videoVariants]);
+    setVideoVariants(videoVariants, duration);
+  }, [setVideoVariants, videoVariants, duration]);
 
   useEffect(() => {
     return () => {

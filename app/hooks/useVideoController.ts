@@ -111,14 +111,22 @@ export function useVideoController({
     const video = videoRef.current;
     if (!video) return;
 
-    setVideoDuration(video.duration);
+    const duration =
+      Number.isFinite(video.duration) && video.duration > 0
+        ? video.duration
+        : videoDuration;
+    if (duration > 0) {
+      setVideoDuration(duration);
+    }
 
     const pendingSourceChange = pendingSourceChangeRef.current;
     const targetTime = pendingSourceChange?.currentTime ?? currentTime;
     const shouldResume = pendingSourceChange?.isPlaying ?? isPlaying;
 
     pendingSourceChangeRef.current = null;
-    video.currentTime = Math.min(targetTime, video.duration);
+    if (duration > 0) {
+      video.currentTime = Math.min(targetTime, duration);
+    }
     setCurrentTime(video.currentTime);
     video.volume = volume;
     video.muted = isMuted;
@@ -126,7 +134,7 @@ export function useVideoController({
     if (shouldResume) {
       video.play().catch(() => {});
     }
-  }, [currentTime, volume, isMuted, isPlaying]);
+  }, [currentTime, videoDuration, volume, isMuted, isPlaying]);
 
   const resetPlayback = useCallback(() => {
     pendingSourceChangeRef.current = { currentTime: 0, isPlaying: false };
@@ -167,7 +175,7 @@ export function useVideoController({
   );
 
   const setVideoVariants = useCallback(
-    (nextVariants: VideoSourceVariant[]) => {
+    (nextVariants: VideoSourceVariant[], duration: number) => {
       const previousVideoId = videoVariants[0]?.videoId;
       const nextVideoId = nextVariants[0]?.videoId;
 
@@ -177,8 +185,10 @@ export function useVideoController({
           isPlaying: false,
         };
         setCurrentTime(0);
-        setVideoDuration(0);
+        setVideoDuration(Number.isFinite(duration) ? Math.max(1, duration) : 1);
         setIsPlaying(false);
+      } else if (videoDuration <= 0) {
+        setVideoDuration(Number.isFinite(duration) ? Math.max(1, duration) : 1);
       }
 
       const hasCurrentQuality = nextVariants.some(
@@ -199,7 +209,7 @@ export function useVideoController({
 
       setVideoVariantsState(nextVariants);
     },
-    [quality, videoVariants],
+    [quality, videoDuration, videoVariants],
   );
 
   /*
@@ -290,19 +300,28 @@ export function useVideoController({
     return Math.min(100, Math.max(0, (x / rect.width) * 100));
   }, []);
 
-  const seek = useCallback((nextProgress: number) => {
-    const video = videoRef.current;
+  const seek = useCallback(
+    (nextProgress: number) => {
+      const video = videoRef.current;
 
-    if (!video || !video.duration) return;
+      if (!video) return;
 
-    const nextTime = (nextProgress / 100) * video.duration;
+      const duration =
+        Number.isFinite(video.duration) && video.duration > 0
+          ? video.duration
+          : videoDuration;
+      if (duration <= 0) return;
 
-    video.currentTime = nextTime;
+      const nextTime = (nextProgress / 100) * duration;
 
-    setCurrentTime(nextTime);
+      video.currentTime = nextTime;
 
-    selectedTimeRef.current = nextTime;
-  }, []);
+      setCurrentTime(nextTime);
+
+      selectedTimeRef.current = nextTime;
+    },
+    [videoDuration],
+  );
 
   const seekPreviewVideo = useCallback((nextProgress: number) => {
     if (previewFrameRequestRef.current !== null) {
@@ -358,7 +377,7 @@ export function useVideoController({
 
       const video = videoRef.current;
 
-      if (!video || !video.duration) {
+      if (!video || videoDuration <= 0) {
         return;
       }
 
@@ -372,7 +391,7 @@ export function useVideoController({
 
       seek(nextProgress);
     },
-    [getProgressFromClientX, seek],
+    [getProgressFromClientX, seek, videoDuration],
   );
 
   /*

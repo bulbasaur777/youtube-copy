@@ -65,6 +65,7 @@ export default function WatchPage({
                 isFullWidth={isFullWidthVideo}
                 videoId={mainVideo.id}
                 videoVariants={videoVariants}
+                duration={mainVideo.duration}
               />
             ) : (
               <div className="aspect-video rounded-2xl bg-black" />
