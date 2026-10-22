@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  MouseEvent as ReactMouseEvent,
+  PointerEvent as ReactPointerEvent,
   useCallback,
   useEffect,
   useRef,
@@ -345,20 +345,46 @@ export function useVideoController({
    * --------------------------------
    */
 
-  const handleProgressMouseEnter = useCallback(() => {
-    setIsBarHovered(true);
-  }, []);
+  const handleProgressPointerEnter = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (event.pointerType === "mouse") {
+        setIsBarHovered(true);
+      }
+    },
+    [],
+  );
 
-  const handleProgressMouseLeave = useCallback(() => {
-    setIsBarHovered(false);
+  const handleProgressPointerLeave = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (event.pointerType === "mouse") {
+        setIsBarHovered(false);
 
-    if (!isScrubbing) {
-      setPreviewProgress(null);
+        if (!isScrubbing) {
+          setPreviewProgress(null);
+        }
+      }
+    },
+    [isScrubbing],
+  );
+
+  const finishProgressScrubbing = useCallback(() => {
+    if (!isScrubbing) return;
+
+    setIsScrubbing(false);
+    setPreviewProgress(null);
+
+    if (wasPlayingRef.current) {
+      videoRef.current?.play().catch(() => {});
     }
+
+    wasPlayingRef.current = false;
+    selectedTimeRef.current = null;
   }, [isScrubbing]);
 
-  const handleProgressMouseMove = useCallback(
-    (event: ReactMouseEvent<HTMLDivElement>) => {
+  const handleProgressPointerMove = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (event.pointerType !== "mouse" && !isScrubbing) return;
+
       const nextProgress = getProgressFromClientX(event.clientX);
 
       setPreviewProgress(nextProgress);
@@ -371,67 +397,33 @@ export function useVideoController({
     [getProgressFromClientX, isScrubbing, seek, seekPreviewVideo],
   );
 
-  const handleProgressMouseDown = useCallback(
-    (event: ReactMouseEvent<HTMLDivElement>) => {
+  const handleProgressPointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
       event.preventDefault();
 
       const video = videoRef.current;
+      if (!video || videoDuration <= 0) return;
 
-      if (!video || videoDuration <= 0) {
-        return;
-      }
-
+      event.currentTarget.setPointerCapture(event.pointerId);
       wasPlayingRef.current = !video.paused;
-
       video.pause();
-
       setIsScrubbing(true);
 
       const nextProgress = getProgressFromClientX(event.clientX);
-
-      seek(nextProgress);
-    },
-    [getProgressFromClientX, seek, videoDuration],
-  );
-
-  /*
-   * --------------------------------
-   * Scrubbing
-   * --------------------------------
-   */
-
-  useEffect(() => {
-    if (!isScrubbing) return;
-
-    const handleMouseMove = (event: MouseEvent) => {
-      const nextProgress = getProgressFromClientX(event.clientX);
-
       setPreviewProgress(nextProgress);
       seekPreviewVideo(nextProgress);
       seek(nextProgress);
-    };
+    },
+    [getProgressFromClientX, seek, seekPreviewVideo, videoDuration],
+  );
 
-    const handleMouseUp = () => {
-      setIsScrubbing(false);
+  const handleProgressPointerUp = useCallback(() => {
+    finishProgressScrubbing();
+  }, [finishProgressScrubbing]);
 
-      if (wasPlayingRef.current) {
-        videoRef.current?.play().catch(() => {});
-      }
-
-      wasPlayingRef.current = false;
-      selectedTimeRef.current = null;
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    window.addEventListener("mouseup", handleMouseUp);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [getProgressFromClientX, isScrubbing, seek, seekPreviewVideo]);
+  const handleProgressPointerCancel = useCallback(() => {
+    finishProgressScrubbing();
+  }, [finishProgressScrubbing]);
 
   /*
    * --------------------------------
@@ -629,10 +621,12 @@ export function useVideoController({
     handleLoadedMetadata,
     handleTimeUpdate,
 
-    handleProgressMouseEnter,
-    handleProgressMouseLeave,
-    handleProgressMouseMove,
-    handleProgressMouseDown,
+    handleProgressPointerEnter,
+    handleProgressPointerLeave,
+    handleProgressPointerMove,
+    handleProgressPointerDown,
+    handleProgressPointerUp,
+    handleProgressPointerCancel,
 
     changeMainVideoMode,
     toggleFullScreen,

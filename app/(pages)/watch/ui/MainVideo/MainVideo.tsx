@@ -5,7 +5,6 @@ import { useVideo } from "@/contexts/VideoContext";
 import { useVideoLayout } from "@/contexts/VideoLayoutContext";
 import type { VideoSourceVariant } from "@/hooks/useVideoController";
 
-import VolumeBar from "./VolumeBar/VolumeBar";
 import Time from "./Time/Time";
 import SwitchReplay from "./SwitchReplay/SwitchReplay";
 import Playback from "./Playback/Playback";
@@ -59,7 +58,6 @@ export default function MainVideo({
     setPreviewVideoRef,
 
     togglePlayback,
-    toggleMute,
     toggleFullScreen,
 
     handlePlay,
@@ -68,10 +66,12 @@ export default function MainVideo({
     handleLoadedMetadata,
     handleTimeUpdate,
 
-    handleProgressMouseEnter,
-    handleProgressMouseLeave,
-    handleProgressMouseMove,
-    handleProgressMouseDown,
+    handleProgressPointerEnter,
+    handleProgressPointerLeave,
+    handleProgressPointerMove,
+    handleProgressPointerDown,
+    handleProgressPointerUp,
+    handleProgressPointerCancel,
   } = useVideo();
 
   const { handleChangeMode, isAnimating } = useVideoLayout();
@@ -148,11 +148,13 @@ export default function MainVideo({
       >
         <div
           ref={progressBarRef}
-          className="group/bar relative cursor-pointer py-2 sm:py-3"
-          onMouseEnter={handleProgressMouseEnter}
-          onMouseLeave={handleProgressMouseLeave}
-          onMouseMove={handleProgressMouseMove}
-          onMouseDown={handleProgressMouseDown}
+          className="group/bar relative cursor-pointer touch-none py-2 sm:py-3"
+          onPointerEnter={handleProgressPointerEnter}
+          onPointerLeave={handleProgressPointerLeave}
+          onPointerMove={handleProgressPointerMove}
+          onPointerDown={handleProgressPointerDown}
+          onPointerUp={handleProgressPointerUp}
+          onPointerCancel={handleProgressPointerCancel}
         >
           <div className="relative h-1">
             <div className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-white/30 transition-transform duration-200 group-hover/bar:scale-y-[2]">
@@ -173,11 +175,7 @@ export default function MainVideo({
           <div className="flex items-center gap-3 sm:gap-6">
             <Playback isPlaying={isPlaying} onToggle={togglePlayback} />
 
-            <Volume isMuted={isMuted} handleSwitchSound={toggleMute} />
-
-            <div className="hidden sm:block">
-              <VolumeBar />
-            </div>
+            <Volume />
 
             <Time
               currentTime={Math.round(currentTime)}
