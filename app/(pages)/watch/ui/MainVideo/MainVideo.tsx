@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import type { SyntheticEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useVideo } from "@/contexts/VideoContext";
@@ -21,20 +20,14 @@ export default function MainVideo({
   isFullWidth = false,
   videoId,
   videoVariants,
-  thumbnailUrl,
   duration,
 }: {
   isFullWidth?: boolean;
   videoId: string;
   videoVariants: VideoSourceVariant[];
-  thumbnailUrl: string | null;
   duration: number;
 }) {
   const [isEndlessMode, setIsEndlessMode] = useState(true);
-  const [loadedThumbnail, setLoadedThumbnail] = useState<{
-    videoId: string;
-    src: string;
-  } | null>(null);
   const [readyVideo, setReadyVideo] = useState<{
     videoId: string;
     src: string;
@@ -90,32 +83,16 @@ export default function MainVideo({
   } = useVideo();
 
   const { handleChangeMode, isAnimating } = useVideoLayout();
-  const thumbnailSrc = thumbnailUrl ?? "/pictures/picture-1.jpg";
-  const thumbnailKey = `${videoId}:${thumbnailSrc}`;
   const sourceKey = `${videoId}:${videoSrc}`;
   const hasInitiallyLoaded = initiallyReadyVideoId === videoId;
   const isMediaReady =
-    loadedThumbnail?.videoId === videoId &&
-    loadedThumbnail.src === thumbnailSrc &&
     readyVideo?.videoId === videoId &&
     readyVideo.src === videoSrc;
   const isInitialLoading = !hasInitiallyLoaded && !isMediaReady;
 
-  const handleThumbnailLoad = () => {
-    setLoadedThumbnail({ videoId, src: thumbnailSrc });
-    if (readyVideo?.videoId === videoId && readyVideo.src === videoSrc) {
-      setInitiallyReadyVideoId(videoId);
-    }
-  };
-
   const handleVideoCanPlay = () => {
     setReadyVideo({ videoId, src: videoSrc });
-    if (
-      loadedThumbnail?.videoId === videoId &&
-      loadedThumbnail.src === thumbnailSrc
-    ) {
-      setInitiallyReadyVideoId(videoId);
-    }
+    setInitiallyReadyVideoId(videoId);
   };
 
   const handleVideoFrameReady = (
@@ -131,15 +108,6 @@ export default function MainVideo({
     handleVideoCanPlay();
   };
 
-  const handleVideoWaiting = (event: SyntheticEvent<HTMLVideoElement>) => {
-    if (
-      event.currentTarget === videoRef.current &&
-      event.currentTarget.dataset.sourceKey === sourceKey
-    ) {
-      setReadyVideo(null);
-    }
-  };
-
   useEffect(() => {
     resetPlayback();
   }, [resetPlayback]);
@@ -147,6 +115,20 @@ export default function MainVideo({
   useEffect(() => {
     setVideoVariants(videoVariants, duration);
   }, [setVideoVariants, videoVariants, duration]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (
+      !video ||
+      video.dataset.sourceKey !== sourceKey ||
+      video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA
+    ) {
+      return;
+    }
+
+    setReadyVideo({ videoId, src: videoSrc });
+    setInitiallyReadyVideoId(videoId);
+  }, [sourceKey, videoId, videoSrc, videoRef]);
 
   useEffect(() => {
     return () => {
@@ -309,25 +291,6 @@ export default function MainVideo({
         className="hidden"
       />
 
-      <Image
-        key={thumbnailKey}
-        src={thumbnailSrc}
-        alt=""
-        width={1}
-        height={1}
-        unoptimized
-        loading="eager"
-        className="hidden"
-        onLoad={handleThumbnailLoad}
-        onError={(event) => {
-          console.error(
-            "Video thumbnail could not be loaded:",
-            event.currentTarget.src,
-          );
-          handleThumbnailLoad();
-        }}
-      />
-
       <video
         key={sourceKey}
         data-source-key={sourceKey}
@@ -337,7 +300,6 @@ export default function MainVideo({
         onLoadedData={handleVideoFrameReady}
         onCanPlay={handleVideoFrameReady}
         onPlaying={handleVideoFrameReady}
-        onWaiting={handleVideoWaiting}
         onTimeUpdate={handleTimeUpdate}
         onPlay={handlePlay}
         onPause={handlePause}
@@ -345,7 +307,6 @@ export default function MainVideo({
         onClick={togglePlayback}
         onDoubleClick={toggleFullScreen}
         src={videoSrc || undefined}
-        poster={hasInitiallyLoaded ? undefined : thumbnailSrc}
         style={{ aspectRatio: "16 / 9" }}
         className={`
           w-full aspect-video
