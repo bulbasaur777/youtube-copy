@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useVideo } from "@/contexts/VideoContext";
 import { useVideoLayout } from "@/contexts/VideoLayoutContext";
@@ -19,14 +20,27 @@ export default function MainVideo({
   isFullWidth = false,
   videoId,
   videoVariants,
+  thumbnailUrl,
   duration,
 }: {
   isFullWidth?: boolean;
   videoId: string;
   videoVariants: VideoSourceVariant[];
+  thumbnailUrl: string | null;
   duration: number;
 }) {
   const [isEndlessMode, setIsEndlessMode] = useState(true);
+  const [loadedThumbnail, setLoadedThumbnail] = useState<{
+    videoId: string;
+    src: string;
+  } | null>(null);
+  const [readyVideo, setReadyVideo] = useState<{
+    videoId: string;
+    src: string;
+  } | null>(null);
+  const [initiallyReadyVideoId, setInitiallyReadyVideoId] = useState<
+    string | null
+  >(null);
   const replayTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const {
@@ -75,6 +89,31 @@ export default function MainVideo({
   } = useVideo();
 
   const { handleChangeMode, isAnimating } = useVideoLayout();
+  const thumbnailSrc = thumbnailUrl ?? "/pictures/picture-1.jpg";
+  const hasInitiallyLoaded = initiallyReadyVideoId === videoId;
+  const isMediaReady =
+    loadedThumbnail?.videoId === videoId &&
+    loadedThumbnail.src === thumbnailSrc &&
+    readyVideo?.videoId === videoId &&
+    readyVideo.src === videoSrc;
+  const isInitialLoading = !hasInitiallyLoaded && !isMediaReady;
+
+  const handleThumbnailLoad = () => {
+    setLoadedThumbnail({ videoId, src: thumbnailSrc });
+    if (readyVideo?.videoId === videoId && readyVideo.src === videoSrc) {
+      setInitiallyReadyVideoId(videoId);
+    }
+  };
+
+  const handleVideoCanPlay = () => {
+    setReadyVideo({ videoId, src: videoSrc });
+    if (
+      loadedThumbnail?.videoId === videoId &&
+      loadedThumbnail.src === thumbnailSrc
+    ) {
+      setInitiallyReadyVideoId(videoId);
+    }
+  };
 
   useEffect(() => {
     resetPlayback();
@@ -132,6 +171,7 @@ export default function MainVideo({
   return (
     <div
       ref={playerContainerRef}
+      aria-busy={!isMediaReady}
       className={`${isFullWidth ? "dark" : ""} group relative z-4 bg-bg
         ${
           isFullScreenMode
@@ -244,11 +284,32 @@ export default function MainVideo({
         className="hidden"
       />
 
+      <Image
+        key={`${videoId}:${thumbnailSrc}`}
+        src={thumbnailSrc}
+        alt=""
+        width={1}
+        height={1}
+        unoptimized
+        loading="eager"
+        className="hidden"
+        onLoad={handleThumbnailLoad}
+        onError={(event) => {
+          console.error(
+            "Video thumbnail could not be loaded:",
+            event.currentTarget.src,
+          );
+          handleThumbnailLoad();
+        }}
+      />
+
       <video
-        key={videoId}
+        key={`${videoId}:${videoSrc}`}
         ref={videoRef}
         muted={isMuted}
         onLoadedMetadata={handleLoadedMetadata}
+        onCanPlay={handleVideoCanPlay}
+        onWaiting={() => setReadyVideo(null)}
         onTimeUpdate={handleTimeUpdate}
         onPlay={handlePlay}
         onPause={handlePause}
@@ -256,6 +317,7 @@ export default function MainVideo({
         onClick={togglePlayback}
         onDoubleClick={toggleFullScreen}
         src={videoSrc || undefined}
+        poster={hasInitiallyLoaded ? undefined : thumbnailSrc}
         style={{ aspectRatio: "16 / 9" }}
         className={`
           w-full aspect-video
@@ -268,6 +330,19 @@ export default function MainVideo({
           }
         `}
       />
+
+      {!isMediaReady && (
+        <div
+          aria-hidden="true"
+          className={`absolute inset-0 z-20 flex w-full items-center justify-center overflow-hidden ${
+            isInitialLoading
+              ? `bg-[#141414] ${isFullWidthVideo ? "max-h-[82vh]" : "rounded-2xl"}`
+              : ""
+          }`}
+        >
+          <div className="aspect-square w-[16%] animate-spin rounded-full border-8 border-b-transparent border-white/25 border-t-white/80" />
+        </div>
+      )}
     </div>
   );
 }

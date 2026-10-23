@@ -11,7 +11,9 @@ import TagsSkeleton from "./ui/Tags/TagsSkeleton";
 import VideosSkeleton from "./ui/Videos/VideosSkeleton";
 import WatchMainVideo from "./ui/WatchPage/WatchMainVideo";
 import WatchMainVideoSkeleton from "./ui/WatchPage/WatchMainVideoSkeleton";
+import WatchComments from "./ui/WatchPage/WatchComments";
 import WatchVideoDetails from "./ui/WatchPage/WatchVideoDetails";
+import Skeleton from "@/ui/Skeleton/Skeleton";
 
 async function WatchTags() {
   const tags = await getAllTags();
@@ -65,12 +67,19 @@ export default async function Watch({
         </Suspense>
       }
       detailsContent={
-        <Suspense fallback={null}>
+        <Suspense fallback={<Skeleton className="h-24 w-full" />}>
           <WatchVideoDetails videoPromise={mainVideoPromise} lang={lang} />
         </Suspense>
       }
-      hasVideo={Boolean(videoId)}
-      lang={lang}
+      commentsContent={
+        <Suspense fallback={<Skeleton className="h-40 w-full" />}>
+          <WatchComments
+            videoPromise={mainVideoPromise}
+            lang={lang}
+            hasVideo={Boolean(videoId)}
+          />
+        </Suspense>
+      }
     />
   );
 }

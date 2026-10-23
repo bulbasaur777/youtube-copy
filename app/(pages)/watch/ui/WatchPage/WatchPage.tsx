@@ -4,16 +4,13 @@ import type { ReactNode } from "react";
 import { useVideo } from "@/contexts/VideoContext";
 
 import { useVideoLayout } from "@/contexts/VideoLayoutContext";
-import { Lang } from "@/types/language";
-import Comments from "../Comments/Comments";
 
 type Props = {
   tagsContent: ReactNode;
   videosContent: ReactNode;
   playerContent: ReactNode;
   detailsContent: ReactNode;
-  hasVideo: boolean;
-  lang: Lang;
+  commentsContent: ReactNode;
 };
 
 export default function WatchPage({
@@ -21,19 +18,18 @@ export default function WatchPage({
   videosContent,
   playerContent,
   detailsContent,
-  hasVideo,
-  lang,
+  commentsContent,
 }: Props) {
   const { isFullWidthVideo } = useVideo();
   const { mainVideoRef, sidebarRef } = useVideoLayout();
 
   return (
-    <div className="absolute inset-x-0 top-[56px] w-full">
+    <div className="absolute inset-x-0 top-[56px] w-full overflow-x-clip">
       <main
-        className={`relative grid min-h-[calc(100vh-56px)] w-full grid-cols-1 grid-rows-[auto_auto_auto] gap-y-4 rounded-tl-xl bg-bg pb-4 text-text lg:grid-rows-[auto_auto] lg:gap-x-4 lg:gap-y-0 ${
+        className={`relative grid min-h-[calc(100vh-56px)] w-full grid-cols-1 grid-rows-[auto_auto_auto] gap-y-4 rounded-tl-xl bg-bg pb-4 text-text lg:grid-rows-[auto_auto] lg:gap-y-0 ${
           isFullWidthVideo
-            ? "lg:grid-cols-[minmax(0,70vw)_minmax(0,1fr)]"
-            : "lg:grid-cols-[minmax(0,calc(70vw_+_1rem))_minmax(0,1fr)]"
+            ? "lg:grid-cols-[calc(70vw_+_2rem)_minmax(0,1fr)] lg:gap-x-0"
+            : "lg:grid-cols-[calc(70vw_+_1rem)_minmax(0,1fr)] lg:gap-x-4"
         }`}
       >
         <div
@@ -66,7 +62,7 @@ export default function WatchPage({
             }
           >
             {detailsContent}
-            <Comments lang={lang} hasVideo={hasVideo} />
+            {commentsContent}
           </div>
         </div>
 

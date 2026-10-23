@@ -4,17 +4,18 @@ import { useVideo } from "@/contexts/VideoContext";
 import TagsSkeleton from "./ui/Tags/TagsSkeleton";
 import VideosSkeleton from "./ui/Videos/VideosSkeleton";
 import WatchMainVideoSkeleton from "./ui/WatchPage/WatchMainVideoSkeleton";
+import Skeleton from "@/ui/Skeleton/Skeleton";
 
 export default function WatchLoading() {
   const { isFullWidthVideo } = useVideo();
 
   return (
-    <div className="absolute inset-x-0 top-[56px] w-full">
+    <div className="absolute inset-x-0 top-[56px] w-full overflow-x-clip">
       <main
-        className={`relative grid min-h-[calc(100vh-56px)] w-full grid-cols-1 grid-rows-[auto_auto_auto] gap-y-4 rounded-tl-xl bg-bg pb-4 text-text lg:grid-rows-[auto_auto] lg:gap-x-4 lg:gap-y-0 ${
+        className={`relative grid min-h-[calc(100vh-56px)] w-full grid-cols-1 grid-rows-[auto_auto_auto] gap-y-4 rounded-tl-xl bg-bg pb-4 text-text lg:grid-rows-[auto_auto] lg:gap-y-0 ${
           isFullWidthVideo
-            ? "lg:grid-cols-[minmax(0,70vw)_minmax(0,1fr)]"
-            : "lg:grid-cols-[minmax(0,calc(70vw_+_1rem))_minmax(0,1fr)]"
+            ? "lg:grid-cols-[calc(70vw_+_2rem)_minmax(0,1fr)] lg:gap-x-0"
+            : "lg:grid-cols-[calc(70vw_+_1rem)_minmax(0,1fr)] lg:gap-x-4"
         }`}
       >
         <section
@@ -37,9 +38,16 @@ export default function WatchLoading() {
           >
             <WatchMainVideoSkeleton />
           </div>
-          {isFullWidthVideo && (
-            <div className="min-h-24 lg:col-start-1 lg:row-start-2" />
-          )}
+          <div
+            className={`flex w-full flex-col gap-4 ${
+              isFullWidthVideo
+                ? "px-4 pb-4 lg:col-start-1 lg:row-start-2 lg:pt-4 lg:pl-4"
+                : "px-4 sm:px-0"
+            }`}
+          >
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-40 w-full" />
+          </div>
         </section>
         <aside
           className={`min-w-0 bg-bg px-4 pb-4 lg:col-start-2 lg:px-0 lg:pr-4 lg:pt-4 ${

@@ -10,7 +10,7 @@ export default function TagsSkeleton() {
           {[96, 76, 88, 104, 82, 92].map((width, index) => (
             <div
               key={index}
-              className="h-[28px] shrink-0 animate-pulse rounded-lg bg-gray-4"
+              className="h-[28px] shrink-0 animate-pulse rounded-lg bg-[color-mix(in_srgb,var(--color-gray-3)_92%,black)]"
               style={{ width, opacity: "30%" }}
             />
           ))}

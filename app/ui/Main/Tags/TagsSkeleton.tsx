@@ -11,7 +11,7 @@ export default function TagsSkeleton() {
           {[96, 76, 88, 104, 82, 92, 72, 100].map((width, index) => (
             <div
               key={index}
-              className="h-[32px] shrink-0 rounded-lg bg-gray-4"
+              className="h-[32px] shrink-0 rounded-lg bg-[color-mix(in_srgb,var(--color-gray-3)_92%,black)]"
               style={{ width }}
             />
           ))}

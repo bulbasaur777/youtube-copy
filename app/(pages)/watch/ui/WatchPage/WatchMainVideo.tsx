@@ -34,6 +34,7 @@ export default function WatchMainVideo({
       isFullWidth={isFullWidthVideo}
       videoId={mainVideo.id}
       videoVariants={videoVariants}
+      thumbnailUrl={mainVideo.thumbnailUrl}
       duration={mainVideo.duration}
     />
   );
