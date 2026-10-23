@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import type { SyntheticEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useVideo } from "@/contexts/VideoContext";
 import { useVideoLayout } from "@/contexts/VideoLayoutContext";
@@ -90,6 +91,8 @@ export default function MainVideo({
 
   const { handleChangeMode, isAnimating } = useVideoLayout();
   const thumbnailSrc = thumbnailUrl ?? "/pictures/picture-1.jpg";
+  const thumbnailKey = `${videoId}:${thumbnailSrc}`;
+  const sourceKey = `${videoId}:${videoSrc}`;
   const hasInitiallyLoaded = initiallyReadyVideoId === videoId;
   const isMediaReady =
     loadedThumbnail?.videoId === videoId &&
@@ -112,6 +115,28 @@ export default function MainVideo({
       loadedThumbnail.src === thumbnailSrc
     ) {
       setInitiallyReadyVideoId(videoId);
+    }
+  };
+
+  const handleVideoFrameReady = (
+    event: SyntheticEvent<HTMLVideoElement>,
+  ) => {
+    if (
+      event.currentTarget !== videoRef.current ||
+      event.currentTarget.dataset.sourceKey !== sourceKey
+    ) {
+      return;
+    }
+
+    handleVideoCanPlay();
+  };
+
+  const handleVideoWaiting = (event: SyntheticEvent<HTMLVideoElement>) => {
+    if (
+      event.currentTarget === videoRef.current &&
+      event.currentTarget.dataset.sourceKey === sourceKey
+    ) {
+      setReadyVideo(null);
     }
   };
 
@@ -285,7 +310,7 @@ export default function MainVideo({
       />
 
       <Image
-        key={`${videoId}:${thumbnailSrc}`}
+        key={thumbnailKey}
         src={thumbnailSrc}
         alt=""
         width={1}
@@ -304,12 +329,15 @@ export default function MainVideo({
       />
 
       <video
-        key={`${videoId}:${videoSrc}`}
+        key={sourceKey}
+        data-source-key={sourceKey}
         ref={videoRef}
         muted={isMuted}
         onLoadedMetadata={handleLoadedMetadata}
-        onCanPlay={handleVideoCanPlay}
-        onWaiting={() => setReadyVideo(null)}
+        onLoadedData={handleVideoFrameReady}
+        onCanPlay={handleVideoFrameReady}
+        onPlaying={handleVideoFrameReady}
+        onWaiting={handleVideoWaiting}
         onTimeUpdate={handleTimeUpdate}
         onPlay={handlePlay}
         onPause={handlePause}
