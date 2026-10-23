@@ -1,28 +1,75 @@
 import { cookies } from "next/headers";
+import { Suspense } from "react";
 import { Lang } from "@/types/language";
 
 import { getAllTags } from "@/lib/data/tags";
 import WatchPage from "./ui/WatchPage/WatchPage";
 import { getVideoById, getVideos } from "@/lib/data/videos";
+import Tags from "./ui/Tags/Tags";
+import Videos from "./ui/Videos/Videos";
+import TagsSkeleton from "./ui/Tags/TagsSkeleton";
+import VideosSkeleton from "./ui/Videos/VideosSkeleton";
+import WatchMainVideo from "./ui/WatchPage/WatchMainVideo";
+import WatchMainVideoSkeleton from "./ui/WatchPage/WatchMainVideoSkeleton";
+import WatchVideoDetails from "./ui/WatchPage/WatchVideoDetails";
+
+async function WatchTags() {
+  const tags = await getAllTags();
+  return <Tags tags={tags} />;
+}
+
+async function WatchVideos({
+  videosPromise,
+  lang,
+}: {
+  videosPromise: ReturnType<typeof getVideos>;
+  lang: Lang;
+}) {
+  const videosList = await videosPromise;
+  return <Videos videosList={videosList} lang={lang} />;
+}
 
 export default async function Watch({
   searchParams,
 }: {
   searchParams: Promise<{ videoId?: string }>;
 }) {
-  const lang = ((await cookies()).get("lang")?.value || "ru") as Lang;
-  const [{ videoId }, videosList, tags] = await Promise.all([
+  const [cookieStore, { videoId }] = await Promise.all([
+    cookies(),
     searchParams,
-    getVideos(1),
-    getAllTags(),
   ]);
-  const selectedVideo = videoId ? await getVideoById(videoId) : null;
+  const lang = (cookieStore.get("lang")?.value || "ru") as Lang;
+  const videosPromise = getVideos(1);
+  const mainVideoPromise = (async () => {
+    const selectedVideo = videoId ? await getVideoById(videoId) : null;
+    return selectedVideo ?? (await videosPromise)[0] ?? null;
+  })();
 
   return (
     <WatchPage
-      tags={tags}
-      videosList={videosList}
-      mainVideo={selectedVideo ?? videosList[0] ?? null}
+      tagsContent={
+        <Suspense fallback={<TagsSkeleton />}>
+          <WatchTags />
+        </Suspense>
+      }
+      videosContent={
+        <Suspense fallback={<VideosSkeleton />}>
+          <WatchVideos videosPromise={videosPromise} lang={lang} />
+        </Suspense>
+      }
+      playerContent={
+        <Suspense
+          fallback={<WatchMainVideoSkeleton />}
+        >
+          <WatchMainVideo videoPromise={mainVideoPromise} />
+        </Suspense>
+      }
+      detailsContent={
+        <Suspense fallback={null}>
+          <WatchVideoDetails videoPromise={mainVideoPromise} lang={lang} />
+        </Suspense>
+      }
+      hasVideo={Boolean(videoId)}
       lang={lang}
     />
   );

@@ -1,46 +1,41 @@
 "use client";
 
-import { useMemo } from "react";
-import MainVideo from "../MainVideo/MainVideo";
+import type { ReactNode } from "react";
 import { useVideo } from "@/contexts/VideoContext";
 
 import { useVideoLayout } from "@/contexts/VideoLayoutContext";
-import Tags from "../Tags/Tags";
-import { getAllVideos } from "@/lib/data/videos";
 import { Lang } from "@/types/language";
-import Videos from "../Videos/Videos";
-import type { VideoSourceVariant } from "@/hooks/useVideoController";
 import Comments from "../Comments/Comments";
-import VideoDetails from "../VideoDetails/VideoDetails";
 
 type Props = {
-  tags: { name: string }[];
-  videosList: Awaited<ReturnType<typeof getAllVideos>>;
-  mainVideo: Awaited<ReturnType<typeof getAllVideos>>[number] | null;
+  tagsContent: ReactNode;
+  videosContent: ReactNode;
+  playerContent: ReactNode;
+  detailsContent: ReactNode;
+  hasVideo: boolean;
   lang: Lang;
 };
 
 export default function WatchPage({
-  tags,
-  videosList,
-  mainVideo,
+  tagsContent,
+  videosContent,
+  playerContent,
+  detailsContent,
+  hasVideo,
   lang,
 }: Props) {
   const { isFullWidthVideo } = useVideo();
   const { mainVideoRef, sidebarRef } = useVideoLayout();
-  const videoVariants = useMemo<VideoSourceVariant[]>(
-    () =>
-      mainVideo?.variants.map(({ videoId, height, url }) => ({
-        videoId,
-        height,
-        url,
-      })) ?? [],
-    [mainVideo],
-  );
 
   return (
     <div className="absolute inset-x-0 top-[56px] w-full">
-      <main className="relative grid min-h-[calc(100vh-56px)] w-full grid-cols-1 grid-rows-[auto_auto_auto] gap-y-4 rounded-tl-xl bg-bg pb-4 text-text lg:grid-cols-[minmax(0,calc(70vw_+_1rem))_minmax(0,1fr)] lg:grid-rows-[auto_auto] lg:gap-x-4 lg:gap-y-0">
+      <main
+        className={`relative grid min-h-[calc(100vh-56px)] w-full grid-cols-1 grid-rows-[auto_auto_auto] gap-y-4 rounded-tl-xl bg-bg pb-4 text-text lg:grid-rows-[auto_auto] lg:gap-x-4 lg:gap-y-0 ${
+          isFullWidthVideo
+            ? "lg:grid-cols-[minmax(0,70vw)_minmax(0,1fr)]"
+            : "lg:grid-cols-[minmax(0,calc(70vw_+_1rem))_minmax(0,1fr)]"
+        }`}
+      >
         <div
           className={
             isFullWidthVideo
@@ -60,16 +55,7 @@ export default function WatchPage({
               isFullWidthVideo ? "col-span-1 row-start-1 lg:col-span-2" : ""
             }`}
           >
-            {mainVideo ? (
-              <MainVideo
-                isFullWidth={isFullWidthVideo}
-                videoId={mainVideo.id}
-                videoVariants={videoVariants}
-                duration={mainVideo.duration}
-              />
-            ) : (
-              <div className="aspect-video rounded-2xl bg-black" />
-            )}
+            {playerContent}
           </div>
 
           <div
@@ -79,8 +65,8 @@ export default function WatchPage({
                 : "flex min-w-0 flex-col gap-4 px-4 sm:px-0"
             }
           >
-            {mainVideo && <VideoDetails video={mainVideo} lang={lang} />}
-            <Comments lang={lang} hasVideo={Boolean(mainVideo)} />
+            {detailsContent}
+            <Comments lang={lang} hasVideo={hasVideo} />
           </div>
         </div>
 
@@ -92,12 +78,8 @@ export default function WatchPage({
               : "lg:col-start-2 lg:row-start-1"
           }`}
         >
-          <div>
-            <Tags tags={tags} />
-          </div>
-          <div>
-            <Videos videosList={videosList} lang={lang} />
-          </div>
+          <div>{tagsContent}</div>
+          <div>{videosContent}</div>
         </div>
       </main>
     </div>

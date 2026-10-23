@@ -27,9 +27,12 @@ type Props = ComponentPropsWithoutRef<"div"> & {
   viewsCounts: number;
   createdAt: Date;
   language: Lang;
+  onThumbnailLoaded: () => void;
+  priority?: boolean;
 };
 
 export default function Video({
+  className,
   id,
   title,
   author,
@@ -41,6 +44,8 @@ export default function Video({
   viewsCounts,
   createdAt,
   language,
+  onThumbnailLoaded,
+  priority = false,
 }: Props) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -54,7 +59,7 @@ export default function Video({
 
   return (
     <motion.div
-      className="relative group cursor-pointer sm:p-1.5 pb-2 sm:pb-4"
+      className={`relative group cursor-pointer sm:p-1.5 pb-2 sm:pb-4 ${className ?? ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       whileHover="hover"
@@ -76,6 +81,8 @@ export default function Video({
         thumbnailUrl={thumbnailUrl}
         duration={duration}
         isHovered={isHovered}
+        onThumbnailLoaded={onThumbnailLoaded}
+        priority={priority}
       />
 
       {/* Video Info */}

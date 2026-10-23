@@ -52,7 +52,7 @@ export default function Videos({ videosList, lang }: Props) {
         }`}
     >
       <div
-        className={`grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-x-2 gap-y-6 w-full bg-bg text-black lg:grid-cols-1
+        className={`grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-x-2 gap-y-6 lg:gap-y-2 w-full bg-bg text-black lg:grid-cols-1
                   ${isLastPage && "mb-5"}
         `}
       >
@@ -87,11 +87,7 @@ export default function Videos({ videosList, lang }: Props) {
           <>
             {Array.from({ length: 10 }).map((_i, index) => {
               return (
-                <VideoSkeleton
-                  key={index}
-                  opacity={3}
-                  timer={50 + index * 50}
-                />
+                <VideoSkeleton key={index} opacity={3} />
               );
             })}
           </>

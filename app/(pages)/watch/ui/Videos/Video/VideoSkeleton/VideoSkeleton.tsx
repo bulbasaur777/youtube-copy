@@ -1,29 +1,12 @@
-"use client";
-
-import { useEffect, useState } from "react";
-
 export default function VideoSkeleton({
   opacity = 20,
-  timer,
 }: {
   opacity?: number;
-  timer: number;
 }) {
-  const [isStart, setIsStart] = useState(false);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsStart(true);
-    }, timer);
-
-    return () => clearTimeout(timeout);
-  }, [timer]);
-
   return (
     <div
-      className={`relative group flex cursor-pointer flex-col pb-2 duration-100! lg:flex-row ${
-        isStart ? "animate-pulse" : ""
-      }`}
+      aria-hidden="true"
+      className="relative group flex animate-pulse cursor-pointer flex-col pb-2 lg:flex-row"
       style={{ opacity: `${opacity}%` }}
     >
       <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-4 lg:w-[60%]">

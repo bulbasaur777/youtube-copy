@@ -50,7 +50,7 @@ export default function Video({
 
   return (
     <motion.div
-      className="relative group flex cursor-pointer flex-col pb-2 lg:flex-row"
+      className="relative group flex cursor-pointer flex-col lg:flex-row"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       whileHover="hover"

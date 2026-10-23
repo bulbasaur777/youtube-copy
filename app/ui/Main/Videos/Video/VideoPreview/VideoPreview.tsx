@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { formatTime } from "@/lib/services/formatTime";
 import { useVideoPreview } from "./hooks/useVideoPreview";
 import VolumeIcon from "./icons/VolumeIcon";
@@ -11,6 +13,8 @@ type Props = {
   thumbnailUrl: string | null;
   duration: number;
   isHovered: boolean;
+  onThumbnailLoaded: () => void;
+  priority: boolean;
 };
 
 export default function VideoPreview({
@@ -20,7 +24,12 @@ export default function VideoPreview({
   thumbnailUrl,
   duration,
   isHovered,
+  onThumbnailLoaded,
+  priority,
 }: Props) {
+  const thumbnailRef = useRef<HTMLImageElement>(null);
+  const thumbnailSettledRef = useRef(false);
+  const [thumbnailFailed, setThumbnailFailed] = useState(false);
   const {
     videoRef,
     previewVideoRef,
@@ -42,6 +51,19 @@ export default function VideoPreview({
     previewProgress,
     isScrubbing,
   } = useVideoPreview({ isHovered, duration });
+
+  const handleThumbnailSettled = useCallback(() => {
+    if (thumbnailSettledRef.current) return;
+
+    thumbnailSettledRef.current = true;
+    onThumbnailLoaded();
+  }, [onThumbnailLoaded]);
+
+  useEffect(() => {
+    if (thumbnailRef.current?.complete) {
+      handleThumbnailSettled();
+    }
+  }, [handleThumbnailSettled]);
 
   return (
     <div className="relative aspect-video overflow-hidden rounded-xl">
@@ -70,13 +92,28 @@ export default function VideoPreview({
 
         {/* Thumbnail */}
         <div
-          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-200 ${
+          className={`absolute inset-0 bg-gray-3 transition-opacity duration-200 ${
             isPlaying ? "opacity-0" : "opacity-100"
           }`}
-          style={{
-            backgroundImage: `url(${thumbnailUrl ?? "/pictures/picture-1.jpg"})`,
-          }}
-        />
+        >
+          {!thumbnailFailed && (
+            <Image
+              ref={thumbnailRef}
+              src={thumbnailUrl ?? "/pictures/picture-1.jpg"}
+              alt=""
+              fill
+              priority={priority}
+              unoptimized
+              sizes="(min-width: 140rem) 25vw, (min-width: 80rem) 33vw, (min-width: 48rem) 50vw, 100vw"
+              className="object-cover"
+              onLoad={handleThumbnailSettled}
+              onError={() => {
+                setThumbnailFailed(true);
+                handleThumbnailSettled();
+              }}
+            />
+          )}
+        </div>
 
         {/* Preview Frame */}
         {isBarHovered &&
