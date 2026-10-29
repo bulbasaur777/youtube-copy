@@ -9,11 +9,13 @@ import TooltipUI from "../../ProfileBar/Tooltip/Tooltip";
 type SearchInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   searchContentClassName?: string;
   showMicrophoneTooltip?: boolean;
+  onSearchStart?: () => void;
 };
 
 export default function SearchInput({
   searchContentClassName,
   showMicrophoneTooltip = true,
+  onSearchStart,
   ...props
 }: SearchInputProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +27,7 @@ export default function SearchInput({
   const handleSearchItemSelect = () => {
     setIsOpen(false);
     inputRef.current?.blur();
+    onSearchStart?.();
   };
 
   const handleSearch = () => {

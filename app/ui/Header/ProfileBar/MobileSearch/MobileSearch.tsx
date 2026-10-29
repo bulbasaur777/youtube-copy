@@ -49,7 +49,7 @@ export default function MobileSearch() {
                 </VisuallyHidden.Root>
 
                 <div className="flex-inline items-center justify-center text-text px-4 mt-[14px]">
-                  <Search />
+                  <Search onSearchStart={() => setOpen(false)} />
                 </div>
               </motion.div>
             </Dialog.Content>
