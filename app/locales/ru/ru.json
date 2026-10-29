@@ -1,4 +1,38 @@
 {
+  "Watch": {
+    "subscribers": "подписчиков",
+    "subscriberCount": "1,24 млн",
+    "subscribe": "Подписаться",
+    "subscribed": "Вы подписаны",
+    "share": "Поделиться",
+    "download": "Скачать",
+    "save": "Сохранить",
+    "watchLater": "Смотреть позже",
+    "createPlaylist": "Создать плейлист",
+    "playlistName": "Название плейлиста",
+    "create": "Создать",
+    "more": "Ещё",
+    "views": "просмотров",
+    "comments": "комментариев",
+    "commentsTitle": "Комментарии",
+    "dragToCollapse": "Зажмите и потяните вниз, чтобы свернуть",
+    "collapseComments": "Свернуть комментарии",
+    "sort": "Упорядочить",
+    "topComments": "Сначала популярные",
+    "newestFirst": "Сначала новые",
+    "addComment": "Оставьте комментарий",
+    "commentPlaceholder": "Оставьте комментарий...",
+    "reply": "Ответить",
+    "minutesAgo": "мин. назад",
+    "description": "Описание",
+    "showMore": "Ещё",
+    "showLess": "Свернуть",
+    "cancel": "Отмена",
+    "postComment": "Оставить комментарий",
+    "previewComment": "Очень интересный выпуск, спасибо за подробный разбор!",
+    "secondComment": "Отличное видео. Было бы интересно продолжение этой темы.",
+    "thirdComment": "Спасибо за видео и за проделанную работу!"
+  },
   "Navigation": {
     "Home": "Домой",
     "Shorts": "Shorts",
@@ -100,6 +134,11 @@
     "Not interested": "Не интересует",
     "Don`t recommend channel": "Не рекомендовать видео с этого канала",
     "Report": "Пожаловаться"
+  },
+
+  "Results": {
+    "filters": "Фильтры",
+    "noResults": "Результатов не найдено"
   },
 
   "Tags": {

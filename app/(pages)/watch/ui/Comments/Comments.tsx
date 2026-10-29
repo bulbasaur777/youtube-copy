@@ -9,8 +9,12 @@ import useComments from "./hooks/useComments";
 import CommentComposer from "./ui/CommentComposer";
 import CommentItem from "./ui/CommentItem";
 import type { Lang } from "@/types/language";
-import { labels } from "../labels";
+import ru from "@/locales/ru/ru.json";
+import ua from "@/locales/ua/ua.json";
+import en from "@/locales/en/en.json";
 import type { VideoComment } from "./types";
+
+const translations = { ru, ua, en } as const;
 
 type Props = {
   lang: Lang;
@@ -26,7 +30,7 @@ export default function Comments({ lang, hasVideo }: Props) {
   const dragStartY = useRef<number | null>(null);
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { mainVideoRef } = useVideoLayout();
-  const text = labels[lang];
+  const text = translations[lang].Watch;
   const comments: VideoComment[] = [
     { author: "Александр", age: 12, text: text.previewComment },
     { author: "Мария", age: 48, text: text.secondComment },

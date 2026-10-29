@@ -4,7 +4,7 @@ import {
   LuThumbsDown,
   LuThumbsUp,
 } from "react-icons/lu";
-import type { WatchLabels } from "../../labels";
+import type { WatchLabels } from "@/types/watchLabels";
 import type { VideoComment } from "../types";
 
 const commentColors = ["bg-[#5c6bc0]", "bg-[#00897b]", "bg-[#8e24aa]"];

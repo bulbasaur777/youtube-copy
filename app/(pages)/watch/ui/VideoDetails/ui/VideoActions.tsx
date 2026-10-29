@@ -10,7 +10,7 @@ import {
 import { formatViewCount } from "../../Videos/Video/helpers/formatVideoMetadata";
 import type { Lang } from "@/types/language";
 import type { VideoActionsState } from "../hooks/useVideoDetails";
-import type { WatchLabels } from "../../labels";
+import type { WatchLabels } from "@/types/watchLabels";
 import type { Video } from "../types";
 import SaveMenu from "./SaveMenu";
 

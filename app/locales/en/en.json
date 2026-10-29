@@ -1,4 +1,38 @@
 {
+  "Watch": {
+    "subscribers": "subscribers",
+    "subscriberCount": "1.24M",
+    "subscribe": "Subscribe",
+    "subscribed": "Subscribed",
+    "share": "Share",
+    "download": "Download",
+    "save": "Save",
+    "watchLater": "Watch later",
+    "createPlaylist": "Create playlist",
+    "playlistName": "Playlist name",
+    "create": "Create",
+    "more": "More",
+    "views": "views",
+    "comments": "comments",
+    "commentsTitle": "Comments",
+    "dragToCollapse": "Hold and drag down to collapse",
+    "collapseComments": "Collapse comments",
+    "sort": "Sort by",
+    "topComments": "Top comments",
+    "newestFirst": "Newest first",
+    "addComment": "Add a comment",
+    "commentPlaceholder": "Add a comment...",
+    "reply": "Reply",
+    "minutesAgo": "minutes ago",
+    "description": "Description",
+    "showMore": "More",
+    "showLess": "Show less",
+    "cancel": "Cancel",
+    "postComment": "Comment",
+    "previewComment": "Really interesting episode, thanks for the detailed breakdown!",
+    "secondComment": "Great video. It would be interesting to see a follow-up.",
+    "thirdComment": "Thanks for the video and all the work!"
+  },
   "Navigation": {
     "Home": "Home",
     "Shorts": "Shorts",
@@ -100,6 +134,11 @@
     "Not interested": "Not interested",
     "Don`t recommend channel": "Don`t recommend channel",
     "Report": "Report"
+  },
+
+  "Results": {
+    "filters": "Filters",
+    "noResults": "No results found"
   },
 
   "Tags": {

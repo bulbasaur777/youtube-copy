@@ -1,4 +1,38 @@
 {
+  "Watch": {
+    "subscribers": "підписників",
+    "subscriberCount": "1,24 млн",
+    "subscribe": "Підписатися",
+    "subscribed": "Ви підписані",
+    "share": "Поділитися",
+    "download": "Завантажити",
+    "save": "Зберегти",
+    "watchLater": "Переглянути пізніше",
+    "createPlaylist": "Створити плейлист",
+    "playlistName": "Назва плейлиста",
+    "create": "Створити",
+    "more": "Ще",
+    "views": "переглядів",
+    "comments": "коментарів",
+    "commentsTitle": "Коментарі",
+    "dragToCollapse": "Затисніть і потягніть вниз, щоб згорнути",
+    "collapseComments": "Згорнути коментарі",
+    "sort": "Упорядкувати",
+    "topComments": "Спочатку популярні",
+    "newestFirst": "Спочатку нові",
+    "addComment": "Залиште коментар",
+    "commentPlaceholder": "Залиште коментар...",
+    "reply": "Відповісти",
+    "minutesAgo": "хв. тому",
+    "description": "Опис",
+    "showMore": "Ще",
+    "showLess": "Згорнути",
+    "cancel": "Скасувати",
+    "postComment": "Залишити коментар",
+    "previewComment": "Дуже цікавий випуск, дякую за детальний розбір!",
+    "secondComment": "Чудове відео. Було б цікаво продовження цієї теми.",
+    "thirdComment": "Дякую за відео та виконану роботу!"
+  },
   "Navigation": {
     "Home": "Додому",
     "Shorts": "Shorts",
@@ -100,6 +134,11 @@
     "Not interested": "Не цікавить",
     "Don`t recommend channel": "Не рекомендувати відео з цього каналу",
     "Report": "Поскаржитися"
+  },
+
+  "Results": {
+    "filters": "Фільтри",
+    "noResults": "Результатів не знайдено"
   },
 
   "Tags": {

@@ -7,7 +7,7 @@ import {
   formatViewCount,
 } from "../../Videos/Video/helpers/formatVideoMetadata";
 import type { DescriptionState } from "../hooks/useVideoDetails";
-import type { WatchLabels } from "../../labels";
+import type { WatchLabels } from "@/types/watchLabels";
 import type { Video } from "../types";
 
 type Props = {

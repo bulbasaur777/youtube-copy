@@ -1,6 +1,6 @@
 "use client";
 
-import type { WatchLabels } from "../../labels";
+import type { WatchLabels } from "@/types/watchLabels";
 
 type Props = {
   text: WatchLabels;

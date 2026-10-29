@@ -1,13 +1,12 @@
-"use client";
-
-import { useVideo } from "@/contexts/VideoContext";
+import { cookies } from "next/headers";
 import TagsSkeleton from "./ui/Tags/TagsSkeleton";
 import VideosSkeleton from "./ui/Videos/VideosSkeleton";
 import WatchMainVideoSkeleton from "./ui/WatchPage/WatchMainVideoSkeleton";
 import Skeleton from "@/ui/Skeleton/Skeleton";
 
-export default function WatchLoading() {
-  const { isFullWidthVideo } = useVideo();
+export default async function WatchLoading() {
+  const cookieStore = await cookies();
+  const isFullWidthVideo = cookieStore.get("mainVideoMode")?.value === "true";
 
   return (
     <div className="absolute inset-x-0 top-[56px] w-full overflow-x-clip">
@@ -36,7 +35,7 @@ export default function WatchLoading() {
               isFullWidthVideo ? "lg:col-span-2 lg:row-start-1" : ""
             }`}
           >
-            <WatchMainVideoSkeleton />
+            <WatchMainVideoSkeleton isFullWidthVideo={isFullWidthVideo} />
           </div>
           <div
             className={`flex w-full flex-col gap-4 ${

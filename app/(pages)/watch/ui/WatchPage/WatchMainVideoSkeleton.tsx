@@ -2,8 +2,13 @@
 
 import { useVideo } from "@/contexts/VideoContext";
 
-export default function WatchMainVideoSkeleton() {
-  const { isFullWidthVideo } = useVideo();
+export default function WatchMainVideoSkeleton({
+  isFullWidthVideo: fullWidthMode,
+}: {
+  isFullWidthVideo?: boolean;
+} = {}) {
+  const { isFullWidthVideo: contextFullWidthMode } = useVideo();
+  const isFullWidthVideo = fullWidthMode ?? contextFullWidthMode;
 
   return (
     <div

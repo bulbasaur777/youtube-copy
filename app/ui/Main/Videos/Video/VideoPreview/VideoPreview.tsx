@@ -154,7 +154,10 @@ export default function VideoPreview({
       {isHovered && isPlaying && (
         <div
           className="flex justify-center items-center size-10 absolute top-2 right-2 rounded-full bg-black/60 opacity-90"
-          onClick={handleSwitchSound}
+          onClick={(event) => {
+            event.stopPropagation();
+            handleSwitchSound();
+          }}
         >
           {videoRef.current?.muted ? <MutedIcon /> : <VolumeIcon />}
         </div>
@@ -168,6 +171,7 @@ export default function VideoPreview({
         onMouseLeave={handleProgressMouseLeave}
         onMouseMove={handleProgressMouseMove}
         onMouseDown={handleProgressMouseDown}
+        onClick={(event) => event.stopPropagation()}
       >
         <div
           className={`relative bg-white/30 z-[5] transition-opacity duration-200 ${

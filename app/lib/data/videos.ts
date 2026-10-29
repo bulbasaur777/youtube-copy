@@ -39,3 +39,25 @@ export async function getVideoById(id: string) {
     },
   });
 }
+
+export async function searchVideos(query: string) {
+  const normalizedQuery = query.trim();
+
+  if (!normalizedQuery) {
+    return [];
+  }
+
+  return prisma.video.findMany({
+    where: {
+      OR: [
+        { title: { contains: normalizedQuery, mode: "insensitive" } },
+        { description: { contains: normalizedQuery, mode: "insensitive" } },
+      ],
+    },
+    include: {
+      author: true,
+      variants: true,
+    },
+    orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+  });
+}

@@ -1,5 +1,6 @@
 import { useLang } from "@/contexts/LanguageContext";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import SearchContent from "../SearchContent/SearchContent";
 import { PiMicrophone } from "react-icons/pi";
 import { GrKeyboard } from "react-icons/gr";
@@ -16,7 +17,21 @@ export default function SearchInput({
   ...props
 }: SearchInputProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useLang();
+  const router = useRouter();
+
+  const handleSearchItemSelect = () => {
+    setIsOpen(false);
+    inputRef.current?.blur();
+  };
+
+  const handleSearch = () => {
+    const query = new URLSearchParams({ query: searchValue });
+    handleSearchItemSelect();
+    router.push(`/results?${query.toString()}`);
+  };
 
   return (
     <div className="flex items-center relative w-full bg-bg/0 h-[40px] rounded">
@@ -36,21 +51,39 @@ export default function SearchInput({
           </svg>
         </span>
         <input
+          ref={inputRef}
           name="search"
           type="text"
           autoComplete="off"
+          value={searchValue}
+          onChange={(event) => setSearchValue(event.currentTarget.value)}
           className={`focus:outline-0 px-4 pb-[2px] text-gray-4 bg-bg border-1 rounded-l-3xl h-[40px] placeholder:text-gray-4 ${!isOpen ? "ml-9 w-[calc(100%_-_2.25rem)] border-gray-5" : "w-full pl-12 border-blue-800 shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)]"}`}
           placeholder={t.Header["Search"]}
           onFocus={() => setIsOpen(true)}
           onBlur={() => setIsOpen(false)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              handleSearch();
+            }
+          }}
         />
 
         <GrKeyboard className="absolute top-2.5 right-3 size-4.5 text-gray-4" />
-        <SearchContent isOpen={isOpen} className={searchContentClassName} />
+        <SearchContent
+          isOpen={isOpen}
+          className={searchContentClassName}
+          onSelect={handleSearchItemSelect}
+        />
       </div>
 
       <div className="flex w-[64px] h-full justify-center items-center border-1 border-l-0 border-gray-5 rounded-r-3xl bg-gray-10 hover:bg-gray-3">
-        <button className="flex items-center justify-center w-full h-full cursor-pointer">
+        <button
+          type="button"
+          aria-label={t.Header["Search"]}
+          onClick={handleSearch}
+          className="flex items-center justify-center w-full h-full cursor-pointer"
+        >
           <svg
             aria-hidden="true"
             className="h-6 w-6 fill-current text-gray-1"

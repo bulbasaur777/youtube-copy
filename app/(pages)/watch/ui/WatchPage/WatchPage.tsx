@@ -1,11 +1,12 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useVideo } from "@/contexts/VideoContext";
 
 import { useVideoLayout } from "@/contexts/VideoLayoutContext";
 
 type Props = {
+  videoId?: string;
   tagsContent: ReactNode;
   videosContent: ReactNode;
   playerContent: ReactNode;
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export default function WatchPage({
+  videoId,
   tagsContent,
   videosContent,
   playerContent,
@@ -22,6 +24,10 @@ export default function WatchPage({
 }: Props) {
   const { isFullWidthVideo } = useVideo();
   const { mainVideoRef, sidebarRef } = useVideoLayout();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [videoId]);
 
   return (
     <div className="absolute inset-x-0 top-[56px] w-full overflow-x-clip">

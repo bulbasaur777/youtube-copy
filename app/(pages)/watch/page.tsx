@@ -49,6 +49,7 @@ export default async function Watch({
 
   return (
     <WatchPage
+      videoId={videoId}
       tagsContent={
         <Suspense fallback={<TagsSkeleton />}>
           <WatchTags />
@@ -60,9 +61,7 @@ export default async function Watch({
         </Suspense>
       }
       playerContent={
-        <Suspense
-          fallback={<WatchMainVideoSkeleton />}
-        >
+        <Suspense fallback={<WatchMainVideoSkeleton />}>
           <WatchMainVideo videoPromise={mainVideoPromise} />
         </Suspense>
       }

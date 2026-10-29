@@ -4,9 +4,11 @@ import SearchItem from "./SearchItem/SearchItem";
 export default function SearchContent({
   isOpen,
   className = "",
+  onSelect,
 }: {
   isOpen: boolean;
   className?: string;
+  onSelect: () => void;
 }) {
   const searchHistory = ["Lineage 2", "Flameria", "Lu4", "Elmorlab"];
   const { t } = useLang();
@@ -22,7 +24,7 @@ export default function SearchContent({
     >
       <ul>
         {searchHistory.map((item: string) => (
-          <SearchItem key={item} item={item} />
+          <SearchItem key={item} item={item} onSelect={onSelect} />
         ))}
       </ul>
     </div>

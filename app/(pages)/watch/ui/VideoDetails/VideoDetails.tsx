@@ -1,14 +1,18 @@
 "use client";
 
 import useVideoDetails from "./hooks/useVideoDetails";
-import { labels } from "../labels";
+import ru from "@/locales/ru/ru.json";
+import ua from "@/locales/ua/ua.json";
+import en from "@/locales/en/en.json";
 import type { VideoDetailsProps } from "./types";
 import VideoActions from "./ui/VideoActions";
 import VideoDescription from "./ui/VideoDescription";
 
+const translations = { ru, ua, en } as const;
+
 export default function VideoDetails({ video, lang }: VideoDetailsProps) {
   const state = useVideoDetails();
-  const text = labels[lang];
+  const text = translations[lang].Watch;
 
   return (
     <section className="flex flex-col gap-3 text-text">

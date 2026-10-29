@@ -6,7 +6,7 @@ import {
   LuX,
 } from "react-icons/lu";
 import type { VideoActionsState } from "../hooks/useVideoDetails";
-import type { WatchLabels } from "../../labels";
+import type { WatchLabels } from "@/types/watchLabels";
 
 type Props = {
   text: WatchLabels;
