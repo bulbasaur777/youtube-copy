@@ -22,7 +22,7 @@ export default function VideoContexMenu() {
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen} modal={false}>
       <DropdownMenu.Trigger asChild>
-        <div className="absolute -top-2 -right-2 p-2 z-20 hover:bg-black/10 rounded-full">
+        <div className="absolute -top-2 -right-2 p-2 z-9 hover:bg-black/10 rounded-full">
           <MenuIcon />
         </div>
       </DropdownMenu.Trigger>
@@ -33,11 +33,11 @@ export default function VideoContexMenu() {
             <DropdownMenu.Content
               asChild
               side="bottom"
-              align="start"
+              align="end"
               collisionPadding={5}
               sideOffset={10}
-              alignOffset={0}
-              className="z-1"
+              alignOffset={2}
+              className="z-9"
             >
               <motion.div
                 initial={{ opacity: 0, y: -10 }}

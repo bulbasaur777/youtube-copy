@@ -40,12 +40,18 @@ export async function getVideoById(id: string) {
   });
 }
 
-export async function searchVideos(query: string) {
+export async function searchVideos(query: string, page = 1) {
   const normalizedQuery = query.trim();
 
   if (!normalizedQuery) {
     return [];
   }
+
+  if (!Number.isInteger(page) || page < 1) {
+    throw new RangeError("Search page must be a positive integer");
+  }
+
+  const pageSize = 10;
 
   return prisma.video.findMany({
     where: {
@@ -59,5 +65,7 @@ export async function searchVideos(query: string) {
       variants: true,
     },
     orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+    skip: (page - 1) * pageSize,
+    take: pageSize,
   });
 }

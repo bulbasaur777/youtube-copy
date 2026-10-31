@@ -12,9 +12,17 @@ export default async function Result({
   const [cookieStore, { query }] = await Promise.all([cookies(), searchParams]);
   const lang = (cookieStore.get("lang")?.value || "ru") as Lang;
   const [videos, tags] = await Promise.all([
-    searchVideos(query ?? ""),
+    searchVideos(query ?? "", 1),
     getAllTags(),
   ]);
 
-  return <ResultPage videos={videos} tags={tags} lang={lang} />;
+  return (
+    <ResultPage
+      key={query ?? ""}
+      videos={videos}
+      tags={tags}
+      lang={lang}
+      query={query ?? ""}
+    />
+  );
 }

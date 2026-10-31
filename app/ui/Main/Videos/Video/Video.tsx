@@ -9,7 +9,8 @@ import { useState, ComponentPropsWithoutRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { formatTimeAgo, formatViews } from "@/lib/services/formatTime";
+import { formatTimeAgo } from "@/lib/services/formatTime";
+import { formatViewCount } from "@/(pages)/watch/ui/Videos/Video/helpers/formatVideoMetadata";
 import VideoContexMenu from "./VideoContextMenu/VideoContextMenu";
 import VideoPreview from "./VideoPreview/VideoPreview";
 
@@ -56,6 +57,9 @@ export default function Video({
   };
 
   const t = translations[language];
+  const viewsTranslations: Record<string, string> =
+    t["Time and Views"].views;
+  const viewsCategory = new Intl.PluralRules(language).select(viewsCounts);
 
   return (
     <motion.div
@@ -105,7 +109,8 @@ export default function Video({
             {author}
           </div>
           <div className="text-text/80 text-[0.9rem]">
-            {formatViews(viewsCounts ?? 0, language, t["Time and Views"].views)}{" "}
+            {formatViewCount(viewsCounts ?? 0, language)}{" "}
+            {viewsTranslations[viewsCategory] ?? viewsTranslations.other}{" "}
             <span className="font-bold">⋅</span>{" "}
             {formatTimeAgo(createdAt, language, t["Time and Views"])}
           </div>

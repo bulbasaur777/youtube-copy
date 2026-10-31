@@ -138,7 +138,10 @@
 
   "Results": {
     "filters": "Filters",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "loading": "Loading videos...",
+    "loadError": "Could not load videos.",
+    "retry": "Retry"
   },
 
   "Tags": {
